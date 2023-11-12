@@ -44,7 +44,7 @@
 #define FirmwareName                "On-Step"
 #define FirmwareVersionMajor        10
 #define FirmwareVersionMinor        19     // minor version 00 to 99
-#define FirmwareVersionPatch        "d"    // for example major.minor patch: 10.03c
+#define FirmwareVersionPatch        "g"    // for example major.minor patch: 10.03c
 #define FirmwareVersionConfig       6      // internal, for tracking configuration file changes
 
 #include "src/Common.h"
@@ -71,9 +71,19 @@ void sensesPoll() {
 }
 
 void setup() {
+  #if ADDON_SELECT_PIN != OFF
+    pinMode(ADDON_SELECT_PIN, OUTPUT);
+    digitalWrite(ADDON_SELECT_PIN, HIGH);
+  #endif
+
   #if DEBUG != OFF
     SERIAL_DEBUG.begin(SERIAL_DEBUG_BAUD);
     delay(2000);
+  #endif
+
+  // let any special processing the pinmap needs happen
+  #ifdef PIN_INIT
+    PIN_INIT();
   #endif
 
   // say hello
