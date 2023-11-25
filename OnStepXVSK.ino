@@ -145,6 +145,7 @@ void setup() {
   #endif
   #if PLUGIN8 != OFF
     PLUGIN8.init();
+
   #endif
 
   // start task manager debug events
