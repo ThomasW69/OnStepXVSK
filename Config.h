@@ -295,27 +295,51 @@
 #define TRACK_COMPENSATION_MEMORY     ON //    OFF, ON Remembers refraction/pointing model compensated tracking settings.    Option
 
 // SLEWING BEHAVIOUR ------------------------------------------ see https://onstep.groups.io/g/main/wiki/Configuration_Mount#SLEWING
-#define SLEW_RATE_BASE_DESIRED        1.0 //    1.0, n. Desired slew rate in deg/sec. Adjustable at run-time from            <-Req'd
-                                          //         1/2 to 2x this rate, and as performace considerations require.
-#define SLEW_RATE_MEMORY              OFF //    OFF, ON Remembers rates set across power cycles.                              Option
-#define SLEW_ACCELERATION_DIST        5.0 //    5.0, n, (degrees.) Approx. distance for acceleration (and deceleration.)      Adjust
-#define SLEW_RAPID_STOP_DIST          2.0 //    2.0, n, (degrees.) Approx. distance required to stop when a slew              Adjust
-                                          //         is aborted or a limit is exceeded.
+#ifndef Kuppel   //Schiebdach
+	#define SLEW_RATE_BASE_DESIRED        0.75  //    1.0, n. Desired slew rate in deg/sec. Adjustable at run-time from            <-Req'd
+											    //         1/2 to 2x this rate, and as MCU performace considerations require.
+	#define SLEW_RATE_MEMORY               ON   //    OFF, ON Remembers rates set across power cycles.                              Option
+	#define SLEW_ACCELERATION_DIST        1.0   //    5.0, n, (degrees.) Approx. distance for acceleration (and deceleration.)      Adjust
+	#define SLEW_RAPID_STOP_DIST          0.5   //    2.0, n, (degrees.) Approx. distance required to stop when a slew              Adjust
+											    //         is aborted or a limit is exceeded.
+#else  //Kuppel
+	#define SLEW_RATE_BASE_DESIRED        0.25  //    1.0, n. Desired slew rate in deg/sec. Adjustable at run-time from            <-Req'd
+											    //         1/2 to 2x this rate, and as MCU performace considerations require.
+	#define SLEW_RATE_MEMORY               ON   //    OFF, ON Remembers rates set across power cycles.                              Option
+	#define SLEW_ACCELERATION_DIST        2.0   //    5.0, n, (degrees.) Approx. distance for acceleration (and deceleration.)      Adjust
+	#define SLEW_RAPID_STOP_DIST          2.0   //    2.0, n, (degrees.) Approx. distance required to stop when a slew              Adjust
+											    //         is aborted or a limit is exceeded.
+#endif
+
+
+
+
 #define GOTO_FEATURE                   ON //     ON, Use OFF to disable mount Goto features.                                  Infreq
 #define GOTO_OFFSET                  0.25 //   0.25, Offset in deg's for goto target unidirectional approach, 0.0 disables    Adjust
 #define GOTO_OFFSET_ALIGN             OFF //    OFF, ON skips final phase of goto for align stars so user tends to approach   Option
                                           //         from the correct direction when centering.
 
 // PIER SIDE BEHAVIOUR --------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#PIERSIDE
-#define MFLIP_SKIP_HOME               OFF //    OFF, ON Goto directly to the destination without visiting home position.      Option
-#define MFLIP_AUTOMATIC_DEFAULT       OFF //    OFF, ON Start with automatic meridian flips enabled.                          Option
-#define MFLIP_AUTOMATIC_MEMORY        OFF //    OFF, ON Remember automatic meridian flip setting across power cycles.         Option
-#define MFLIP_PAUSE_HOME_DEFAULT      OFF //    OFF, ON Start with meridian flip pause at home enabed.                        Infreq
-#define MFLIP_PAUSE_HOME_MEMORY       OFF //    OFF, ON Remember meridian flip pause at home setting across power cycles.     Infreq
+#ifndef Kuppel  //Schiebedach 
+  #define MFLIP_SKIP_HOME               ON   //    OFF, ON Goto directly to the destination without visiting home position.      Option
+  #define MFLIP_AUTOMATIC_DEFAULT       OFF  //    OFF, ON Start with automatic meridian flips enabled.                          Option
+  #define MFLIP_AUTOMATIC_MEMORY        ON   //    OFF, ON Remember automatic meridian flip setting across power cycles.         Option
+  #define MFLIP_PAUSE_HOME_DEFAULT      OFF  //    OFF, ON Start with meridian flip pause at home enabed.                        Infreq
+  #define MFLIP_PAUSE_HOME_MEMORY       OFF  //    OFF, ON Remember meridian flip pause at home setting across power cycles.     Infreq
+  #define PIER_SIDE_SYNC_CHANGE_SIDES   ON   //    OFF, ON Allows sync to change pier side, for GEM mounts.                      Option
+  #define PIER_SIDE_PREFERRED_DEFAULT   WEST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
+  #define PIER_SIDE_PREFERRED_MEMORY    ON   //    OFF, ON Remember preferred pier side setting across power cycles.             Option
+#else
+  #define MFLIP_SKIP_HOME               ON  //    OFF, ON Goto directly to the destination without visiting home position.      Option
+  #define MFLIP_AUTOMATIC_DEFAULT       OFF //    OFF, ON Start with automatic meridian flips enabled.                          Option
+  #define MFLIP_AUTOMATIC_MEMORY        ON  //    OFF, ON Remember automatic meridian flip setting across power cycles.         Option
+  #define MFLIP_PAUSE_HOME_DEFAULT      OFF //    OFF, ON Start with meridian flip pause at home enabed.                        Infreq
+  #define MFLIP_PAUSE_HOME_MEMORY       OFF //    OFF, ON Remember meridian flip pause at home setting across power cycles.     Infreq
+  #define PIER_SIDE_SYNC_CHANGE_SIDES   ON  //    OFF, ON Allows sync to change pier side, for GEM mounts.                      Option
+  #define PIER_SIDE_PREFERRED_DEFAULT   EAST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
+  #define PIER_SIDE_PREFERRED_MEMORY    OFF //    OFF, ON Remember preferred pier side setting across power cycles.             Option
+#endif
 
-#define PIER_SIDE_SYNC_CHANGE_SIDES   OFF //    OFF, ON Allows sync to change pier side, for GEM mounts.                      Option
-#define PIER_SIDE_PREFERRED_DEFAULT  BEST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
-#define PIER_SIDE_PREFERRED_MEMORY    OFF //    OFF, ON Remember preferred pier side setting across power cycles.             Option
 
 // ALIGN -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#ALIGN
 #define ALIGN_AUTO_HOME               OFF //    OFF, ON uses home switches to find home first when starting an align.         Option
