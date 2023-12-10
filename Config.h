@@ -241,7 +241,6 @@
                                           //         Provides Date/Time, and if available, PPS & Lat/Long also.
 #define TIME_LOCATION_PPS_SENSE       OFF //    OFF, HIGH senses PPS (pulse per second,) signal rising edge, or use LOW for   Option
                                           //         falling edge, or use BOTH for rising and falling edges.
-                                          //         Better tracking accuracy especially for Mega2560's w/ceramic resonator.
 
 #define SERIAL_GPS Serial5
 #define SERIAL_GPS_BAUD 9600

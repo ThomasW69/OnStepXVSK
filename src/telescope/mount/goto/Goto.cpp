@@ -355,7 +355,7 @@ CommandError Goto::validate() {
 }
 
 // add an align star (at the current position relative to target)
-CommandError Goto::alignAddStar() {
+CommandError Goto::alignAddStar(bool sync) {
   if (alignState.currentStar > alignState.lastStar) return CE_PARAM_RANGE;
 
   CommandError e = CE_NONE;
@@ -365,7 +365,11 @@ CommandError Goto::alignAddStar() {
     #if ALIGN_MAX_NUM_STARS > 1  
       transform.align.init(transform.mountType, site.location.latitude);
     #endif
-    e = requestSync(gotoTarget, settings.preferredPierSide);
+    e = requestSync(gotoTarget, PSS_SAME_ONLY);
+    lastAlignTarget = mount.getMountPosition(CR_MOUNT_ALL);
+    transform.hourAngleToRightAscension(&lastAlignTarget, true);
+  } else {
+    if (sync) e = requestSync(gotoTarget, PSS_SAME_ONLY);
   }
 
   // add an align star
@@ -516,6 +520,10 @@ void Goto::poll() {
       state = GS_NONE;
       mount.update();
 
+      // back to normal motor frequencies
+      axis1.setFrequencyScale(1.0F);
+      axis2.setFrequencyScale(1.0F);
+
       // kill this monitor
       tasks.setDurationComplete(taskHandle);
       taskHandle = 0;
@@ -537,6 +545,35 @@ void Goto::poll() {
       mountStatus.soundAlert();
 
       return;
+    }
+  }
+
+  // adjust rates near the horizon to help avoid exceeding the minimum altitude limit
+  if (transform.mountType != ALTAZM) {
+    if (site.locationEx.latitude.absval > degToRad(10.0)) {
+      static float last_a2 = 0;
+      Coordinate coords = mount.getMountPosition(CR_MOUNT_ALT);
+      float a2 = site.locationEx.latitude.sign*coords.d;
+
+      // range 0.2 to 1.0, where a larger distance has less slowdown effect
+      float slowdownFactor =  radToDeg(coords.a - limits.settings.altitude.min)/(SLEW_ACCELERATION_DIST*2.0);
+
+      // constrain
+      if (slowdownFactor > 1.0F) slowdownFactor = 1.0F;
+      if (slowdownFactor < 0.2F) slowdownFactor = 0.2F;
+
+      // if Dec is decreasing slow down the Dec axis, if Dec is increasing slow down the RA axis
+      if (a2 < last_a2) {
+        axis1.setFrequencyScale(1.0F);
+        axis2.setFrequencyScale(slowdownFactor);
+      } else {
+        axis1.setFrequencyScale(slowdownFactor);
+        axis2.setFrequencyScale(1.0F);
+      }
+      last_a2 = a2;
+    } else {
+      axis1.setFrequencyScale(1.0F);
+      axis2.setFrequencyScale(1.0F);
     }
   }
 
