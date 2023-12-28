@@ -65,7 +65,7 @@
   #define AXIS1_STEPS_PER_DEGREE      46000 //  12800, n. Number of steps per degree:                                          <-Req'd
                                             //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
   #define AXIS1_REVERSE                 OFF //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
-  #define AXIS1_LIMIT_MIN              -180 //   -180, n. Where n= -90..-360 (degrees.) Minimum "Hour Angle" or Azimuth.        Adjust
+  #define AXIS1_LIMIT_MIN              -360 //   -180, n. Where n= -90..-360 (degrees.) Minimum "Hour Angle" or Azimuth.        Adjust
   #define AXIS1_LIMIT_MAX               360 //    180, n. Where n=  90.. 360 (degrees.) Maximum "Hour Angle" or Azimuth.        Adjust
 
   #define AXIS1_DRIVER_MICROSTEPS       16 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
@@ -101,12 +101,16 @@
                                           //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
   #define AXIS2_STEPS_PER_DEGREE2     23555.55556 //  12800, n. Number of steps per degree:                                          <-Req'd
                                           //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
-  #define AXIS2_REVERSE                 OFF //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
+  #define AXIS2_REVERSE                 ON //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
+  //Limits für 30er
   #define AXIS2_LIMIT_MIN               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
+  //Limits für Schiefspiegler
+  #define AXIS2_LIMIT_MIN2               -6.5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
+  #define AXIS2_LIMIT_MAX2                6.5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
 
-  #define AXIS2_DRIVER_MICROSTEPS       4 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
-  #define AXIS2_DRIVER_MICROSTEPS_GOTO  OFF //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
+  #define AXIS2_DRIVER_MICROSTEPS       16 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
+  #define AXIS2_DRIVER_MICROSTEPS_GOTO  8 //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
 
   // for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
   #define AXIS2_DRIVER_IHOLD            500 //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
@@ -124,7 +128,7 @@
   #define AXIS2_SENSE_HOME              LOW //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
   #define AXIS2_SENSE_LIMIT_MIN LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_LIMIT_MAX LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
-  #define AXIS2_HOME_DEFAULT             20 // angle in degrees, for the Dec or Altitude Axis.
+  #define AXIS2_HOME_DEFAULT             10 // angle in degrees, for the Dec or Altitude Axis.
 
   // MOUNT -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#MOUNT
   #define MOUNT_TYPE                GEM_TA //    GEM, GEM         German Equatorial Mount, etc. that need meridian flips.     <-Req'd
@@ -157,8 +161,8 @@
   #define AXIS1_LIMIT_MIN              -180 //   -180, n. Where n= -90..-360 (degrees.) Minimum "Hour Angle" or Azimuth.        Adjust
   #define AXIS1_LIMIT_MAX               360 //    180, n. Where n=  90.. 360 (degrees.) Maximum "Hour Angle" or Azimuth.        Adjust
 
-  #define AXIS1_DRIVER_MICROSTEPS       16 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
-  #define AXIS1_DRIVER_MICROSTEPS_GOTO  4 //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
+  #define AXIS1_DRIVER_MICROSTEPS       4 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
+  #define AXIS1_DRIVER_MICROSTEPS_GOTO  OFF //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
 
   // for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
   #define AXIS1_DRIVER_IHOLD            500 //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
@@ -191,10 +195,14 @@
   #define AXIS2_STEPS_PER_DEGREE2     56497.7778 //  12800, n. Number of steps per degree:                                          <-Req'd
                                             //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
   #define AXIS2_REVERSE                 OFF //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
+  //limits für DE newton
   #define AXIS2_LIMIT_MIN               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
+  //Limits für DE Kühn-Slevogt
+  #define AXIS2_LIMIT_MIN2               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
+  #define AXIS2_LIMIT_MAX2                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
 
-  #define AXIS2_DRIVER_MICROSTEPS       4 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
+  #define AXIS2_DRIVER_MICROSTEPS       16 //    OFF, n. Microstep mode when tracking.                                        <-Req'd
   #define AXIS2_DRIVER_MICROSTEPS_GOTO  OFF //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
 
   // for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
@@ -264,7 +272,7 @@
 #define ST4_HAND_CONTROL_FOCUSER       ON //     ON, ON alternate to above: Focuser move [E]f1 [W]f2 [N]-     [S]+            Option
 
 // GUIDING BEHAVIOUR ------------------------------------------ see https://onstep.groups.io/g/main/wiki/Configuration_Mount#GUIDING
-#define GUIDE_TIME_LIMIT               10 //     10, n. Time limit n=0..120 seconds. Use 0 to disable.                        Adjust
+#define GUIDE_TIME_LIMIT               30 //     10, n. Time limit n=0..120 seconds. Use 0 to disable.                        Adjust
 #define GUIDE_DISABLE_BACKLASH        OFF //    OFF, Disable backlash takeup during guiding at <= 1X.                         Option
 
 // LIMITS ------------------------------------------------------ see https://onstep.groups.io/g/main/wiki/Configuration_Mount#LIMITS

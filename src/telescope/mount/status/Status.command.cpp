@@ -137,7 +137,13 @@ bool Status::command(char *reply, char *command, char *parameter, bool *supressF
       reply[6] = (int)guide.settings.pulseRateSelect|0b10000000;                   // Pulse-guide selection
       reply[7] = (int)guide.settings.axis1RateSelect|0b10000000;                   // Guide selection
       reply[8] = limits.errorCode()|0b10000000;                                    // General error
-      reply[9] = 0;
+      //reply[9] = 0;
+      //@WTH=====================================================================
+      if (tls.isReady() && (TIME_LOCATION_SOURCE == GPS)) { reply[9] = 0b10000001; }
+      else { reply[9] = 0b10000000; }                                             // GPS Status 
+      reply[10] = 0;
+      //=========================================================================
+
       *numericReply = false;
     } else
 

@@ -441,7 +441,7 @@ bool Goto::command(char *reply, char *command, char *parameter, bool *supressFra
         } else
       #endif
 
-      // :SX9[m],[n]#   Set mount misc.
+      // :SX9[m],[n]#   Set mount misc.  
       //                Return: see below
       if (parameter[0] == '9') {
         switch (parameter[1]) {
@@ -494,6 +494,9 @@ bool Goto::command(char *reply, char *command, char *parameter, bool *supressFra
               case 'E': settings.preferredPierSide = PSS_EAST; break;
               case 'W': settings.preferredPierSide = PSS_WEST; break;
               case 'B': settings.preferredPierSide = PSS_BEST; break;
+              case '1': mount.SelectTelescope(1);  break;   //30er auswählen mit AXIS2_STEPS_PER_DEGREE
+              case '2': mount.SelectTelescope(2);  break;  //schiefspiegler auswählen mit AXIS2_STEPS_PER_DEGREE2
+
               default: *commandError = CE_PARAM_RANGE;
             }
             #if PIER_SIDE_PREFERRED_MEMORY == ON

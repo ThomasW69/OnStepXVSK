@@ -399,6 +399,76 @@ void Mount::updatePosition(CoordReturn coordReturn) {
   if (isHome()) current.pierSide = PIER_SIDE_NONE;
 }
 
+
+
+//@WTH=====================================================================
+//Funktion wählt das Teleskop und setzt die Limits für den Tangentialarm
+// Schiebdach:
+// TelType 1 = 30e in Schiebedach
+// TelType 2 = Schiefspiegler im Schiebedach
+// Kuppel
+// TelType 1 = Newton
+// TelType 2 = Kühn-Slevogt
+
+
+void Mount::SelectTelescope(int TelType) {
+#ifndef Kuppel	 //nur beim 30er sind Tangentialarme unterschiedlich
+    if (TelType == 1) {
+        //Getriebedaten für den 30er auswählen
+        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
+        goTo.settings.preferredPierSide = PSS_WEST;
+        VLF("MSG: Normale Teleskopseite");
+    }
+    else if (TelType == 2) {
+        //Getriebedaten für den Schiefspiegler auswählen 
+        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE2 * RAD_DEG_RATIO;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN2;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX2;
+        goTo.settings.preferredPierSide = PSS_EAST;
+        VLF("MSG: Schiefspiegler");
+    }
+    else {
+        //Ansonsten immer den 30 er nehmen
+        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
+        goTo.settings.preferredPierSide = PSS_WEST;
+        VLF("MSG: 30er Cassegrain");
+    }
+#else     //für Kuppel 
+    if (TelType == 1) {
+        //Getriebedaten für den Newton
+        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
+        goTo.settings.preferredPierSide = PSS_EAST;
+        VLF("MSG: Newton");
+    }
+    else if (TelType == 2) {
+        //Getriebedaten für den Schiefspiegler auswählen 
+        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE2 * RAD_DEG_RATIO;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
+        goTo.settings.preferredPierSide = PSS_WEST;
+        VLF("MSG: Kuehn-Slevogt");
+    }
+    else {
+        //Ansonsten immer den 30 er nehmen
+        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
+        goTo.settings.preferredPierSide = PSS_EAST;
+        VLF("MSG: NEWTON");
+    }
+#endif
+}
+
 Mount mount;
 
 #endif
+
+
+
+

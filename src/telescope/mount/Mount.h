@@ -100,6 +100,7 @@ class Mount {
     float trackingRateOffsetDec = 0.0F;   // in sidereal units 1x = 15 arc-seconds/sidereal second
 
     MountSettings settings = {RC_DEFAULT, { 0, 0 }};
+    void SelectTelescope(int TelType);   //ZUsatzfunktion für die Achse2, damit die Limits und die Encoder richtig eingestellt werden
 
   private:
     // alternate tracking rate calculation method

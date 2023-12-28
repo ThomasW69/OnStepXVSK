@@ -707,4 +707,7 @@ bool Axis::motionErrorSensed(Direction direction) {
   if ((direction == DIR_FORWARD || direction == DIR_BOTH) && errors.maxLimitSensed) return true; else return false;
 }
 
+
+
+
 #endif
