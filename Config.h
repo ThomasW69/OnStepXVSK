@@ -73,7 +73,7 @@
 
   // for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
   #define AXIS1_DRIVER_IHOLD            500 //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
-  #define AXIS1_DRIVER_IRUN             1000 //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
+  #define AXIS1_DRIVER_IRUN             500 //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
   #define AXIS1_DRIVER_IGOTO            1500 //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
   // /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
 
@@ -114,7 +114,7 @@
 
   // for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
   #define AXIS2_DRIVER_IHOLD            500 //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
-  #define AXIS2_DRIVER_IRUN             1000 //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
+  #define AXIS2_DRIVER_IRUN             500 //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
   #define AXIS2_DRIVER_IGOTO            1500 //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
   // /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
 
@@ -128,7 +128,8 @@
   #define AXIS2_SENSE_HOME              LOW //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
   #define AXIS2_SENSE_LIMIT_MIN LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_LIMIT_MAX LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
-  #define AXIS2_HOME_DEFAULT             10 // angle in degrees, for the Dec or Altitude Axis.
+  #define AXIS2_HOME_DEFAULT             7  // angle in degrees, for the Dec or Altitude Axis.
+  #define AXIS2_SENSE_HOME_OFFSET        0   // offset in arc-seconds to home from the sense position
 
   // MOUNT -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#MOUNT
   #define MOUNT_TYPE                GEM_TA //    GEM, GEM         German Equatorial Mount, etc. that need meridian flips.     <-Req'd
@@ -221,7 +222,8 @@
   #define AXIS2_SENSE_HOME              LOW //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
   #define AXIS2_SENSE_LIMIT_MIN LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_LIMIT_MAX LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
-  #define AXIS2_HOME_DEFAULT             20 // angle in degrees, for the Dec or Altitude Axis.
+  #define AXIS2_SENSE_HOME_OFFSET        0   // offset in arc-seconds to home from the sense position
+  #define AXIS2_HOME_DEFAULT             7 // angle in degrees, for the Dec or Altitude Axis.
 
   // MOUNT -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#MOUNT
   #define MOUNT_TYPE                GEM_TA //    GEM, GEM         German Equatorial Mount, etc. that need meridian flips.     <-Req'd
@@ -273,7 +275,7 @@
 
 // GUIDING BEHAVIOUR ------------------------------------------ see https://onstep.groups.io/g/main/wiki/Configuration_Mount#GUIDING
 #define GUIDE_TIME_LIMIT               30 //     10, n. Time limit n=0..120 seconds. Use 0 to disable.                        Adjust
-#define GUIDE_DISABLE_BACKLASH        OFF //    OFF, Disable backlash takeup during guiding at <= 1X.                         Option
+#define GUIDE_DISABLE_BACKLASH        ON //    OFF, Disable backlash takeup during guiding at <= 1X.                         Option
 
 // LIMITS ------------------------------------------------------ see https://onstep.groups.io/g/main/wiki/Configuration_Mount#LIMITS
 #define LIMIT_SENSE                   OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
@@ -322,7 +324,7 @@
 
 
 #define GOTO_FEATURE                   ON //     ON, Use OFF to disable mount Goto features.                                  Infreq
-#define GOTO_OFFSET                  0.25 //   0.25, Offset in deg's for goto target unidirectional approach, 0.0 disables    Adjust
+#define GOTO_OFFSET                  0.0 //   0.25, Offset in deg's for goto target unidirectional approach, 0.0 disables    Adjust
 #define GOTO_OFFSET_ALIGN             OFF //    OFF, ON skips final phase of goto for align stars so user tends to approach   Option
                                           //         from the correct direction when centering.
 
