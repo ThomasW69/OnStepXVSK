@@ -97,11 +97,12 @@
 
   // If runtime axis settings are enabled changes in the section below may be ignored unless you reset to defaults:
   // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
-  #define AXIS2_STEPS_PER_DEGREE      43333.33333 //  12800, n. Number of steps per degree:                                          <-Req'd
+//  #define AXIS2_STEPS_PER_DEGREE      43333.33333 //  12800, n. Number of steps per degree:                                          <-Req'd
+  #define AXIS2_STEPS_PER_DEGREE      21666 //  12800, n. Number of steps per degree:                                          <-Req'd
                                           //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
   #define AXIS2_STEPS_PER_DEGREE2     23555.55556 //  12800, n. Number of steps per degree:                                          <-Req'd
                                           //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
-  #define AXIS2_REVERSE                 ON //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
+  #define AXIS2_REVERSE                 OFF //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
   //Limits für 30er
   #define AXIS2_LIMIT_MIN               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
@@ -125,7 +126,7 @@
 
   #define AXIS2_POWER_DOWN              ON  //    OFF, ON Powers off 30sec after movement stops or 10min after last<=1x guide.  Option
 
-  #define AXIS2_SENSE_HOME              LOW //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
+  #define AXIS2_SENSE_HOME              HIGH //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
   #define AXIS2_SENSE_LIMIT_MIN LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_LIMIT_MAX LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_HOME_DEFAULT             7  // angle in degrees, for the Dec or Altitude Axis.
@@ -336,7 +337,7 @@
   #define MFLIP_PAUSE_HOME_DEFAULT      OFF  //    OFF, ON Start with meridian flip pause at home enabed.                        Infreq
   #define MFLIP_PAUSE_HOME_MEMORY       OFF  //    OFF, ON Remember meridian flip pause at home setting across power cycles.     Infreq
   #define PIER_SIDE_SYNC_CHANGE_SIDES   ON   //    OFF, ON Allows sync to change pier side, for GEM mounts.                      Option
-  #define PIER_SIDE_PREFERRED_DEFAULT   WEST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
+  #define PIER_SIDE_PREFERRED_DEFAULT   BEST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
   #define PIER_SIDE_PREFERRED_MEMORY    ON   //    OFF, ON Remember preferred pier side setting across power cycles.             Option
 #else
   #define MFLIP_SKIP_HOME               ON  //    OFF, ON Goto directly to the destination without visiting home position.      Option
@@ -345,8 +346,8 @@
   #define MFLIP_PAUSE_HOME_DEFAULT      OFF //    OFF, ON Start with meridian flip pause at home enabed.                        Infreq
   #define MFLIP_PAUSE_HOME_MEMORY       OFF //    OFF, ON Remember meridian flip pause at home setting across power cycles.     Infreq
   #define PIER_SIDE_SYNC_CHANGE_SIDES   ON  //    OFF, ON Allows sync to change pier side, for GEM mounts.                      Option
-  #define PIER_SIDE_PREFERRED_DEFAULT   EAST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
-  #define PIER_SIDE_PREFERRED_MEMORY    OFF //    OFF, ON Remember preferred pier side setting across power cycles.             Option
+  #define PIER_SIDE_PREFERRED_DEFAULT   BEST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
+  #define PIER_SIDE_PREFERRED_MEMORY    ON //    OFF, ON Remember preferred pier side setting across power cycles.             Option
 #endif
 
 

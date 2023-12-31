@@ -460,10 +460,10 @@ void Mount::SelectTelescope(int TelType) {
         axis2.settings.limits.min = AXIS2_LIMIT_MIN;
         axis2.settings.limits.max = AXIS2_LIMIT_MAX;
         goTo.settings.preferredPierSide = PSS_WEST;
-        VLF("MSG: Normale Teleskopseite");
+        VLF("MSG: 30er Cassegrain");
     }
     else if (TelType == 2) {
-        //Getriebedaten für den Schiefspiegler auswählen 
+        //Getriebedaten für den Schiefspiegler auswählen (Nebeninstrument 2)
         axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE2 * RAD_DEG_RATIO;
         axis2.settings.limits.min = AXIS2_LIMIT_MIN2;
         axis2.settings.limits.max = AXIS2_LIMIT_MAX2;
@@ -471,7 +471,7 @@ void Mount::SelectTelescope(int TelType) {
         VLF("MSG: Schiefspiegler");
     }
     else {
-        //Ansonsten immer den 30 er nehmen
+        //Ansonsten immer den 30 er nehmen (Hauptinstrument 1)
         axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
         axis2.settings.limits.min = AXIS2_LIMIT_MIN;
         axis2.settings.limits.max = AXIS2_LIMIT_MAX;
@@ -480,23 +480,23 @@ void Mount::SelectTelescope(int TelType) {
     }
 #else     //für Kuppel 
     if (TelType == 1) {
-        //Getriebedaten für den Newton
+        //Getriebedaten für den Newton (Hauptinstrument 1)
         axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
         axis2.settings.limits.min = AXIS2_LIMIT_MIN;
         axis2.settings.limits.max = AXIS2_LIMIT_MAX;
-        goTo.settings.preferredPierSide = PSS_EAST;
+        goTo.settings.preferredPierSide = PSS_BEST;
         VLF("MSG: Newton");
     }
     else if (TelType == 2) {
-        //Getriebedaten für den Schiefspiegler auswählen 
+        //Getriebedaten für die Kühn Slevogt Kamera auswählen  (Nebeninstrument)
         axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE2 * RAD_DEG_RATIO;
-        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
-        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
+        axis2.settings.limits.min = AXIS2_LIMIT_MIN2;
+        axis2.settings.limits.max = AXIS2_LIMIT_MAX2;
         goTo.settings.preferredPierSide = PSS_WEST;
         VLF("MSG: Kuehn-Slevogt");
     }
     else {
-        //Ansonsten immer den 30 er nehmen
+        //Ansonsten immer den Newton nehmen
         axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE * RAD_DEG_RATIO;
         axis2.settings.limits.min = AXIS2_LIMIT_MIN;
         axis2.settings.limits.max = AXIS2_LIMIT_MAX;
@@ -504,6 +504,8 @@ void Mount::SelectTelescope(int TelType) {
         VLF("MSG: NEWTON");
     }
 #endif
+
+  
 }
 
 Mount mount;
