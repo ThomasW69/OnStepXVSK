@@ -3,6 +3,7 @@
 // uses the specified serial port
 
 #include "GPS.h"
+#include "../../telescope/Mount/status/Status.h"
 
 #if defined(TIME_LOCATION_SOURCE) && TIME_LOCATION_SOURCE == GPS
 
@@ -90,7 +91,6 @@ bool TimeLocationSource::init() {
 
   VF("MSG: TLS, GPS start monitor task (rate 10ms priority 7)... ");
   if (tasks.add(1, 0, true, 7, gpsPoll, "gpsPoll")) { VLF("success"); active = true; } else { VLF("FAILED!"); }
-
   return active;
 }
 
@@ -149,6 +149,7 @@ void TimeLocationSource::poll() {
         #ifdef TLS_TIMELIB
           setTime(gps.time.hour(), gps.time.minute(), gps.time.second(), gps.date.day(), gps.date.month(), gps.date.year());
         #endif
+        mountStatus.soundOK();
 
         ready = true;
       }

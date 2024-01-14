@@ -58,9 +58,26 @@ void Sound::click() {
       _buzzerHandle = tasks.add(50, 0, false, 6, buzzerOff);
     #endif
     #if STATUS_BUZZER >= 0
-      tone(STATUS_BUZZER_PIN, STATUS_BUZZER, 50);
+      tone(STATUS_BUZZER_PIN, STATUS_BUZZER, 10);
     #endif
   }
+}
+
+
+void Sound::OK() {
+    if (ready && enabled) {
+#if STATUS_BUZZER == ON
+        digitalWriteEx(STATUS_BUZZER_PIN, STATUS_BUZZER_ON_STATE);
+        if (_buzzerHandle) tasks.remove(_buzzerHandle);
+        _buzzerHandle = tasks.add(50, 0, false, 6, buzzerOff);
+#endif
+#if STATUS_BUZZER >= 0
+        tone(STATUS_BUZZER_PIN, 1000, 200); delay(200);
+        tone(STATUS_BUZZER_PIN, 1500, 200); delay(200);
+        tone(STATUS_BUZZER_PIN, 2000, 200);
+
+#endif
+    }
 }
 
 #endif

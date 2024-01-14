@@ -4,6 +4,7 @@
 #pragma once
 
 #include "../../Common.h"
+#include "../../telescope/Mount/status/Status.h"
 
 #if defined(TIME_LOCATION_SOURCE) && TIME_LOCATION_SOURCE == GPS
 
