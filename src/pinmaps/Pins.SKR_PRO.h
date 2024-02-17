@@ -45,17 +45,17 @@
 #define TEMP2_PIN               PF5              // Connector Labeled T2
 #define TEMP3_PIN               PF6              // Connector Labeled T3
 
-#ifndef FOCUSER_TEMPERATURE_PIN
-  #define FOCUSER_TEMPERATURE_PIN  TEMP0_PIN
-#endif
 #ifndef FEATURE1_TEMPERATURE_PIN
-  #define FEATURE1_TEMPERATURE_PIN TEMP1_PIN
+  #define FEATURE1_TEMPERATURE_PIN TEMP0_PIN
 #endif
 #ifndef FEATURE2_TEMPERATURE_PIN
-  #define FEATURE2_TEMPERATURE_PIN TEMP2_PIN
+  #define FEATURE2_TEMPERATURE_PIN TEMP1_PIN
 #endif
 #ifndef FEATURE3_TEMPERATURE_PIN
-  #define FEATURE3_TEMPERATURE_PIN TEMP3_PIN
+  #define FEATURE3_TEMPERATURE_PIN TEMP2_PIN
+#endif
+#ifndef FOCUSER_TEMPERATURE_PIN
+  #define FOCUSER_TEMPERATURE_PIN  TEMP3_PIN
 #endif
 
 // The PEC index sense is a logic level input, resets the PEC index on rising edge then waits for 60 seconds before allowing another reset
@@ -149,9 +149,9 @@
 
 // ST4 interface (Connector Labeled EXTENSION-2 which has Gnd and +5V so near ideal)
 #define ST4_RA_W_PIN            PD0              // ST4 RA- West
-#define ST4_DEC_S_PIN           PE4              // ST4 DE- South
-#define ST4_DEC_N_PIN           PD2              // ST4 DE+ North
-#define ST4_RA_E_PIN            PE2              // ST4 RA+ East
+#define ST4_DEC_S_PIN           PD2              // ST4 DE- South
+#define ST4_DEC_N_PIN           PD5              // ST4 DE+ North
+#define ST4_RA_E_PIN            PE0              // ST4 RA+ East
 
 #else
 #error "Wrong processor for this configuration!"
