@@ -14,7 +14,7 @@
 
 // =================================================================================================================================
 
-//#define Kuppel       //Auskommentieren, wenn für den 30er compiliert werden soll
+//#define Kuppel       //Auskommentieren, wenn fï¿½r den 30er compiliert werden soll
 
 // CONTROLLER ======================================================================================================================
 
@@ -46,6 +46,9 @@
 // SIGNALING ------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Controller#SIGNALING
 #define STEP_WAVE_FORM             SQUARE // SQUARE, PULSE Step signal wave form faster rates. SQUARE best signal integrity.  Adjust
                                           //         Applies to all axes.
+
+// NON-VOLATILE MEMORY ---------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Controller#NV
+#define NV_DRIVER              NV_DEFAULT // NV_DEF, Use platforms default non-volatile device to remember runtime settings.  Option
 
 // =================================================================================================================================
 // MOUNT ===========================================================================================================================
@@ -103,10 +106,10 @@
   #define AXIS2_STEPS_PER_DEGREE2     23555.55556 //  12800, n. Number of steps per degree:                                          <-Req'd
                                           //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
   #define AXIS2_REVERSE                 ON //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
-  //Limits für 30er
+  //Limits fï¿½r 30er
   #define AXIS2_LIMIT_MIN               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
-  //Limits für Schiefspiegler
+  //Limits fï¿½r Schiefspiegler
   #define AXIS2_LIMIT_MIN2               -6.5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX2                6.5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
 
@@ -197,10 +200,10 @@
   #define AXIS2_STEPS_PER_DEGREE2     56497.7778 //  12800, n. Number of steps per degree:                                          <-Req'd
                                             //         n = (stepper_steps * micro_steps * overall_gear_reduction)/360.0
   #define AXIS2_REVERSE                 ON //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.   <-Often
-  //limits für DE newton
+  //limits fï¿½r DE newton
   #define AXIS2_LIMIT_MIN               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
-  //Limits für DE Kühn-Slevogt
+  //Limits fï¿½r DE Kï¿½hn-Slevogt
   #define AXIS2_LIMIT_MIN2               -5 //    -90, n. Where n=-90..0 (degrees.) Minimum allowed Declination or Altitude.    Infreq
   #define AXIS2_LIMIT_MAX2                5 //     90, n. Where n=0..90 (degrees.) Maximum allowed Declination or Altitude.     Infreq
 

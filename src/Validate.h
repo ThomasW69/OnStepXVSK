@@ -159,10 +159,6 @@
   #endif
 #endif
 
-#if AXIS1_SYNC_THRESHOLD != OFF && AXIS2_SYNC_THRESHOLD == OFF
-  #error "Configuration (Config.h): Setting AXIS2_SYNC_THRESHOLD must be set if AXIS1_SYNC_THRESHOLD is set"
-#endif
-
 #if AXIS1_REVERSE != ON && AXIS1_REVERSE != OFF
   #error "Configuration (Config.h): Setting AXIS1_REVERSE unknown, use OFF or ON."
 #endif
@@ -186,7 +182,7 @@
     #error "Configuration (Config.h): Enabling AXIS1_SECTOR_GEAR requires AXIS2_SENSE_HOME to be OFF (except for tangent arm Dec mounts.)"
   #endif
 #else
-  #if (AXIS1_SENSE_HOME) == OFF && (AXIS2_SENSE_HOME) != OFF
+  #if AXIS2_TANGENT_ARM == OFF && ((AXIS1_SENSE_HOME) == OFF && (AXIS2_SENSE_HOME) != OFF)
     #error "Configuration (Config.h): Enabling AXIS2_SENSE_HOME requires enabling AXIS1_SENSE_HOME or AXIS2_TANGENT_ARM."
   #endif
   #if AXIS1_LIMIT_MIN < -360 || AXIS1_LIMIT_MIN > -90
@@ -262,10 +258,6 @@
   #if AXIS2_ENCODER < ENC_FIRST || AXIS2_ENCODER > ENC_LAST
     #error "Configuration (Config.h): Setting AXIS2_ENCODER unknown, use a valid SERVO ENCODER (from Constants.h)"
   #endif
-#endif
-
-#if AXIS2_SYNC_THRESHOLD != OFF && AXIS1_SYNC_THRESHOLD == OFF
-  #error "Configuration (Config.h): Setting AXIS1_SYNC_THRESHOLD must be set if AXIS2_SYNC_THRESHOLD is set"
 #endif
 
 #if AXIS2_REVERSE != ON && AXIS2_REVERSE != OFF
