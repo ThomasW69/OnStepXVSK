@@ -25,7 +25,7 @@ IRAM_ATTR void clockTickWrapper() { fracLAST++; }
 #if TIME_LOCATION_SOURCE == GPS
   void gpsCheck() {
     if (site.tls->isReady()) {
-      VLF("MSG: Mount, setting site from GPS");
+      VLF("MSG: Mount, getting site from GPS");
       double latitude, longitude;
       float elevation;
       site.tls->getSite(latitude, longitude, elevation);
@@ -37,43 +37,16 @@ IRAM_ATTR void clockTickWrapper() { fracLAST++; }
       if (mount.isHome()) home.init();
 
       JulianDate jd;
-
-      // repeat query until we have the time
+      VLF("MSG: Mount, getting date/time from GPS");
       unsigned long syncTimeout = millis() + 1000;
       while (!site.tls->get(jd) && (long)(millis() - syncTimeout) < 0) { };
-
       if ((long)(millis() - syncTimeout) < 0) {
-        VLF("MSG: Mount, got updated date/time from GPS");
-
-        bool gpsSynced = true;
-        #if TIME_LOCATION_PPS_SENSE != OFF
-          syncTimeout = millis() + 1000;
-          int ppsInitialState = digitalReadF(PPS_SENSE_PIN);
-          while ((digitalReadF(PPS_SENSE_PIN) == ppsInitialState) && (long)(millis() - syncTimeout) < 0) { };
-          gpsSynced = (long)(millis() - syncTimeout) < 0;
-          if (gpsSynced) { VLF("MSG: Mount, setting date/time from GPS on PPS edge"); }
-        #else
-          VLF("MSG: Mount, setting date/time from GPS");
-        #endif
-
-        if (gpsSynced) {
-          site.setDateTime(jd);
-
-          site.dateIsReady = true;
-          site.timeIsReady = true;
-
-          #if GOTO_FEATURE == ON
-            if (park.state == PS_PARKED) park.restore(false);
-          #endif
-
-        } else {
-          VLF("MSG: Mount, GPS PPS sync timed out");
-          initError.tls = true; 
-        }
-
+        site.dateIsReady = true;
+        site.timeIsReady = true;
+        site.setDateTime(jd);
+        site.updateTLS();
       } else {
-        VLF("MSG: Mount, GPS sync timed out");
-        DL((long)(millis() - syncTimeout));
+        VLF("MSG: Mount, GPS timed out getting date/time from GPS");
         initError.tls = true; 
       }
 
@@ -94,15 +67,13 @@ IRAM_ATTR void clockTickWrapper() { fracLAST++; }
 #if TIME_LOCATION_SOURCE == NTP
   void ntpCheck() {
     if (site.tls->isReady()) {
-      VLF("MSG: Mount, setting date/time from NTP");
+      VLF("MSG: Mount, getting date/time from NTP");
       JulianDate jd;
       site.tls->get(jd);
       site.dateIsReady = true;
       site.timeIsReady = true;
       site.setDateTime(jd);
-      #if GOTO_FEATURE == ON
-        if (park.state == PS_PARKED) park.restore(false);
-      #endif
+      site.updateTLS();
 
       VLF("MSG: Mount, stopping NTP monitor task");
       tasks.setDurationComplete(tasks.getHandleByName("ntpChk"));
@@ -115,6 +86,35 @@ IRAM_ATTR void clockTickWrapper() { fracLAST++; }
       tasks.setDurationComplete(tasks.getHandleByName("ntp"));
       initError.tls = true; 
     }
+  }
+#endif
+
+#if (TIME_LOCATION_PPS_SENSE) != OFF && TIME_LOCATION_PPS_SYNC == ON
+  void ppsMonitor() {
+    static long deltaAvg = 0;
+
+    // monitor and adapt to keep PPS in sync with our UT1
+    static unsigned long lastMicros = 0;
+    long p = micros() - pps.lastMicros;
+    if (pps.lastMicros == lastMicros || p < 250000L) {
+      // DF("MSG: Site,"); D(pps.synced ? ' ' : '!'); DF("sub-micro delta="); D((long)pps.averageSubMicros - 16000000L); DLF("us");
+      return;
+    }
+    lastMicros = pps.lastMicros;
+
+    double h = site.getDateTime().hour*3600.0;
+    char syncc = ' ';
+    long s = round((h - floor(h))*1000000.0);
+    if (!pps.synced) { syncc = '!'; p = 1000000L; s = 1000000L; }
+
+    long delta = p - s;
+    deltaAvg = (delta + deltaAvg*19L)/20L;
+    // DF("MSG: Site,"); D(syncc); DF("sub-micro delta="); D((long)pps.averageSubMicros - 16000000L); DF("us, pps="); D(p/1000L); DF("ms, time.sec="); D(s/1000L); DF("ms, delta="); D(delta/1000); DLF("ms");
+
+    if (abs(deltaAvg) < 3000L) return;
+    pps.averageSubMicrosSkew = (-deltaAvg*HAL_MIN_PPS_SUB_MICRO)/2000L;
+    if (pps.averageSubMicrosSkew < -128) pps.averageSubMicrosSkew = -128; else
+    if (pps.averageSubMicrosSkew > 128) pps.averageSubMicrosSkew = 128;
   }
 #endif
 
@@ -187,6 +187,12 @@ void Site::init() {
 
   #if (TIME_LOCATION_PPS_SENSE) != OFF
     pps.init();
+    #if TIME_LOCATION_PPS_SYNC == ON
+      VF("MSG: Mount, site start PPS monitor task (rate 333ms priority 6)... ");
+      delay(100);
+      // period ms (0=idle), duration ms (0=forever), repeat, priority (highest 0..7 lowest), task_handle
+      if (tasks.add(333, 0, true, 6, ppsMonitor, "ppsMon")) { VLF("success"); } else { VLF("FAILED!"); }
+    #endif
   #endif
 }
 
@@ -202,7 +208,7 @@ void Site::updateLocation() {
   setSiderealTime(ut1);
 }
 
-// update the TLS 
+// update the initError status and restore the park position if necessary
 void Site::updateTLS() {
   #if TIME_LOCATION_SOURCE != OFF
     tls->set(ut1);
@@ -210,6 +216,9 @@ void Site::updateTLS() {
 
   if (isDateTimeReady()) {
     if (initError.tls) initError.tls = false;
+    #if GOTO_FEATURE == ON
+      if (park.state == PS_PARKED) park.restore(false);
+    #endif
   }
 }
 
