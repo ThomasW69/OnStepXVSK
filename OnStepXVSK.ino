@@ -41,6 +41,8 @@
 // Use tabs "Config..." to configure OnStep to your requirements
 
 // Firmware version ----------------------------------------------------------------------------------------------------------------
+#include <TMCStepper.h>
+#include <TMCStepper_UTILITY.h>
 #define FirmwareName                "On-Step"
 #define FirmwareVersionMajor        10
 #define FirmwareVersionMinor        22     // minor version 00 to 99

@@ -15,6 +15,7 @@
 #include "../pec/Pec.h"
 #include "../limits/Limits.h"
 #include "../status/Status.h"
+#include "../Site/Site.h"
 
 bool Status::command(char *reply, char *command, char *parameter, bool *supressFrame, bool *numericReply, CommandError *commandError) {
   UNUSED(supressFrame);
@@ -144,7 +145,7 @@ bool Status::command(char *reply, char *command, char *parameter, bool *supressF
       reply[8] = limits.errorCode()|0b10000000;                                    // General error
       //reply[9] = 0;
       //@WTH=====================================================================
-      if (tls.isReady() && (TIME_LOCATION_SOURCE == GPS)) { reply[9] = 0b10000001; }
+      if (site.tls -> isReady() && (TIME_LOCATION_SOURCE == GPS)) { reply[9] = 0b10000001; }
       else { reply[9] = 0b10000000; }                                             // GPS Status 
       reply[10] = 0;
       //=========================================================================

@@ -325,7 +325,6 @@ class Axis {
 
     bool commonMinMaxSense = false;
 
-
   private:
     // set frequency in "measures" (degrees, microns, etc.) per second (0 stops motion)
     void setFrequency(float frequency);

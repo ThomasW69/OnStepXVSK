@@ -111,6 +111,7 @@ class Goto {
     // flag to indicate that encoders are present
     bool absoluteEncodersPresent = false;
     bool encodersPresent = false;
+   
     GotoSettings settings = { MFLIP_AUTOMATIC_DEFAULT == ON, MFLIP_PAUSE_HOME_DEFAULT == ON, (PierSideSelect)PIER_SIDE_PREFERRED_DEFAULT, 1000001.0F };
 
   private:
