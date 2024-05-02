@@ -182,15 +182,11 @@
     #error "Configuration (Config.h): Enabling AXIS1_SECTOR_GEAR requires AXIS2_SENSE_HOME to be OFF (except for tangent arm Dec mounts.)"
   #endif
 #else
-<<<<<<< Updated upstream
-  #if AXIS2_TANGENT_ARM == OFF && ((AXIS1_SENSE_HOME) == OFF && (AXIS2_SENSE_HOME) != OFF)
-    #error "Configuration (Config.h): Enabling AXIS2_SENSE_HOME requires enabling AXIS1_SENSE_HOME or AXIS2_TANGENT_ARM."
-  #endif
-=======
+
 //  #if (AXIS1_SENSE_HOME) == OFF && (AXIS2_SENSE_HOME) != OFF
 //    #error "Configuration (Config.h): Enabling AXIS2_SENSE_HOME requires enabling AXIS1_SENSE_HOME or AXIS2_TANGENT_ARM."
 //  #endif
->>>>>>> Stashed changes
+
   #if AXIS1_LIMIT_MIN < -360 || AXIS1_LIMIT_MIN > -90
     #error "Configuration (Config.h): Setting AXIS1_LIMIT_MIN unknown, use value in the range -90 to -360."
   #endif
