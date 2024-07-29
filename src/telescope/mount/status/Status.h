@@ -31,12 +31,11 @@ class Status {
     inline void soundAlert() { if (sound.enabled) wake(); sound.alert(); }
     inline void soundBeep() { if (sound.enabled) wake(); sound.beep(); }
     inline void soundClick() { if (sound.enabled) wake(); sound.click(); }
-    inline void soundOK() { if (sound.enabled) wake(); sound.OK(); }
     inline void soundToggleEnable() { sound.enabled = !sound.enabled; }
 
   private:
     uint8_t statusTaskHandle = 0;
-    Sound sound; 
+    Sound sound;
 };
 
 extern Status mountStatus;

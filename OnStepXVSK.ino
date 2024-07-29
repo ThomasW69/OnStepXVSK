@@ -41,12 +41,10 @@
 // Use tabs "Config..." to configure OnStep to your requirements
 
 // Firmware version ----------------------------------------------------------------------------------------------------------------
-#include <TMCStepper.h>
-#include <TMCStepper_UTILITY.h>
 #define FirmwareName                "On-Step"
 #define FirmwareVersionMajor        10
 #define FirmwareVersionMinor        23     // minor version 00 to 99
-#define FirmwareVersionPatch        "a"    // for example major.minor patch: 10.03c
+#define FirmwareVersionPatch        "d"    // for example major.minor patch: 10.03c
 #define FirmwareVersionConfig       6      // internal, for tracking configuration file changes
 
 #include "src/Common.h"
@@ -147,7 +145,6 @@ void setup() {
   #endif
   #if PLUGIN8 != OFF
     PLUGIN8.init();
-
   #endif
 
   // start task manager debug events

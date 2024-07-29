@@ -58,7 +58,7 @@ void Sound::click() {
       _buzzerHandle = tasks.add(50, 0, false, 6, buzzerOff);
     #endif
     #if STATUS_BUZZER >= 0
-      tone(STATUS_BUZZER_PIN, STATUS_BUZZER, 10);
+      tone(STATUS_BUZZER_PIN, STATUS_BUZZER, 50);
     #endif
   }
 }

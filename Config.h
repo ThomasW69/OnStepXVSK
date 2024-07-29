@@ -16,19 +16,19 @@
 
 //#define Kuppel       //Auskommentieren, wenn f�r den 30er compiliert werden soll
 
+
 // CONTROLLER ======================================================================================================================
 
 // PINMAP ------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Controller#PINMAP
 #define PINMAP                     MaxPCB4// for Teensy4.1 w/TMC2209 support //    OFF, Choose from: MiniPCB, MiniPCB2, MaxPCB2, MaxESP3, CNC3, STM32Blue,      <-Req'd
                                           //         MaxSTM3, FYSETC_S6_2, etc.  Other boards and more info. in ~/src/Constants.h
-
 // SERIAL PORT COMMAND CHANNELS --------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Controller#SERIAL_PORTS
 #define SERIAL_A_BAUD_DEFAULT       57600 //   9600, n. Where n=9600,19200,57600,115200,230400,460800 (common baud rates.)    Infreq
 #define SERIAL_B_BAUD_DEFAULT       57600 //   9600, n. Baud rate as above. See (src/pinmaps/) for Serial port assignments.   Infreq
 #define SERIAL_B_ESP_FLASHING         OFF //    OFF, ON Upload ESP8266 WiFi firmware through SERIAL_B with :ESPFLASH# cmd.    Option
 #define SERIAL_C_BAUD_DEFAULT       57600 //    OFF, n. Baud rate as above. See (src/pinmaps/) for Serial port assignments.   Infreq
-#define SERIAL_D_BAUD_DEFAULT       OFF //    OFF, n. Baud rate as above. See (src/pinmaps/) for Serial port assignments.   Infreq
-#define SERIAL_E_BAUD_DEFAULT       OFF //    OFF, n. Baud rate as above. See (src/pinmaps/) for Serial port assignments.   Infreq
+#define SERIAL_D_BAUD_DEFAULT         OFF //    OFF, n. Baud rate as above. See (src/pinmaps/) for Serial port assignments.   Infreq
+#define SERIAL_E_BAUD_DEFAULT         OFF //    OFF, n. Baud rate as above. See (src/pinmaps/) for Serial port assignments.   Infreq
 #define SERIAL_RADIO                  OFF //    OFF, Use BLUETOOTH or WIFI_ACCESS_POINT or WIFI_STATION (ESP32 only.)         Option
 
 // STATUS --------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Controller#STATUS_LED
@@ -61,6 +61,7 @@
 #ifndef Kuppel
 
   //ab hier der 30er
+#define  CONFIG_NAME "Steuerung 30er"
   // MOUNT -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#MOUNT
   #define MOUNT_TYPE                GEM_TA //    GEM, GEM         German Equatorial Mount, etc. that need meridian flips.     <-Req'd
                                           //         GEM_TA      GEM w/tangent arm Declination
@@ -100,7 +101,7 @@
   #define AXIS1_DRIVER_IGOTO            1500 //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
   // /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
 
-  #define AXIS1_DRIVER_STATUS           ON //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
+  #define AXIS1_DRIVER_STATUS           OFF //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
 
   #define AXIS1_DRIVER_DECAY            STEALTHCHOP //    OFF, Tracking decay mode default override. TMC default is STEALTHCHOP.        Infreq
   #define AXIS1_DRIVER_DECAY_GOTO       SPREADCYCLE //    OFF, Decay mode goto default override. TMC default is SPREADCYCLE.            Infreq
@@ -142,23 +143,24 @@
   #define AXIS2_DRIVER_IGOTO            1500 //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
   // /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
 
-  #define AXIS2_DRIVER_STATUS           ON //    OFF, ON, HIGH, or LOW.  Polling for driver status info/fault detection.       Option
+  #define AXIS2_DRIVER_STATUS           OFF //    OFF, ON, HIGH, or LOW.  Polling for driver status info/fault detection.       Option
 
   #define AXIS2_DRIVER_DECAY            STEALTHCHOP //    OFF, Tracking decay mode default override. TMC default is STEALTHCHOP.        Infreq
   #define AXIS2_DRIVER_DECAY_GOTO       STEALTHCHOP //    OFF, Decay mode goto default override. TMC default is SPREADCYCLE.            Infreq
 
   #define AXIS2_POWER_DOWN              ON  //    OFF, ON Powers off 30sec after movement stops or 10min after last<=1x guide.  Option
 
+  //#define AXIS2_TANGENT_ARM             ON
   #define AXIS2_SENSE_HOME              HIGH //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
   #define AXIS2_SENSE_LIMIT_MIN LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_LIMIT_MAX LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_HOME_DEFAULT             7  // angle in degrees, for the Dec or Altitude Axis.
   #define AXIS2_SENSE_HOME_OFFSET        0   // offset in arc-seconds to home from the sense position
-  #define AXIS2_SLEW_RATE_PERCENT        50.0F //Axis 2 langsamermachen für Homing
+  #define AXIS2_SLEW_RATE_PERCENT        25.0F //Axis 2 langsamermachen für Homing
 
 
 #else  //ab hier die Kuppel
-
+#define  CONFIG_NAME "Kuppelsteuerung"
   // MOUNT -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#MOUNT
   #define MOUNT_TYPE                GEM_TA //    GEM, GEM         German Equatorial Mount, etc. that need meridian flips.     <-Req'd
                                           //         GEM_TA      GEM w/tangent arm Declination
@@ -174,7 +176,7 @@
                                           //              at the poles. Use TOPO_STRICT to apply refraction even in that case.
                                           //              Use OBSERVED_PLACE for no refraction.
 
-  #define MOUNT_ENABLE_IN_STANDBY       OFF //    OFF, ON Enables mount motor drivers while in standby.                         Infreq
+  #define MOUNT_ENABLE_IN_STANDBY       ON //    OFF, ON Enables mount motor drivers while in standby.                         Infreq
 
   // AXIS1 RA/AZM -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Axes
   #define AXIS1_DRIVER_MODEL        TMC2209 //    OFF, Enter motor driver model (above) in both axes to activate the mount.    <-Often
@@ -244,34 +246,14 @@
 
   #define AXIS2_POWER_DOWN              ON  //    OFF, ON Powers off 30sec after movement stops or 10min after last<=1x guide.  Option
 
-  #define AXIS2_SENSE_HOME              LOW //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
+  //#define AXIS2_TANGENT_ARM              ON
+  #define AXIS2_SENSE_HOME              OFF //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
   #define AXIS2_SENSE_LIMIT_MIN LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_LIMIT_MAX LIMIT_SENSE // ...NSE, HIGH or LOW state on limit sense switch stops movement.                  Option
   #define AXIS2_SENSE_HOME_OFFSET        0   // offset in arc-seconds to home from the sense position
   #define AXIS2_HOME_DEFAULT             7 // angle in degrees, for the Dec or Altitude Axis.
+  #define AXIS2_SLEW_RATE_PERCENT        25.0F //Axis 2 langsamer machen für Homing
 
-<<<<<<< Updated upstream
-  // MOUNT -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Mount#MOUNT
-  #define MOUNT_TYPE                GEM_TA //    GEM, GEM         German Equatorial Mount, etc. that need meridian flips.     <-Req'd
-                                          //         GEM_TA      GEM w/tangent arm Declination
-                                          //         GEM_TAC     GEM w/tangent arm Declination and geometry correction
-                                          //         FORK        Fork Mount
-                                          //         FORK_TA     FORK w/tangent arm Declination
-                                          //         FORK_TAC    FORK w/tangent arm Declination and geometry correction
-                                          //         ALTAZM      Altitude/Azimuth Mount, Dobsonians, etc.
-                                          //         ALTAZM_UNL  ALTAZM w/unlimited Azimuth motion
-
-
-  #define MOUNT_COORDS          TOPOCENTRIC // ...RIC, Applies refraction to coordinates to/from OnStep, except exactly         Infreq
-                                          //              at the poles. Use TOPO_STRICT to apply refraction even in that case.
-                                          //              Use OBSERVED_PLACE for no refraction.
-
-#define MOUNT_COORDS_MEMORY           OFF //    OFF, ON Remembers approximate mount coordinates across power cycles.          Option
-                                          //         Requires FRAM NV memory and the mount must not move while powered down.
-
-#define MOUNT_ENABLE_IN_STANDBY       OFF //    OFF, ON Enables mount motor drivers while in standby.                         Infreq
-=======
->>>>>>> Stashed changes
 
 #endif
 
@@ -282,6 +264,7 @@
                                           //         Provides Date/Time, and if available, PPS & Lat/Long also.
 #define TIME_LOCATION_PPS_SENSE       OFF //    OFF, HIGH senses PPS (pulse per second,) signal rising edge, or use LOW for   Option
                                           //         falling edge, or use BOTH for rising and falling edges.
+#define TIME_LOCATION_SOURCE_FALLBACK  TEENSY
 
 #define SERIAL_GPS Serial5
 #define SERIAL_GPS_BAUD 9600
@@ -300,10 +283,10 @@
 // *** It is up to you to verify the interface meets the electrical specifications of any connected device, use at your own risk ***
 #define ST4_INTERFACE                 OFF //    OFF, ON enables interface. <= 1X guides unless hand control mode.             Option
                                           //         During goto btn press: aborts slew or continue meridian flip pause home
-#define ST4_HAND_CONTROL               ON //     ON, ON for hand controller special features and SHC support.                 Option
+#define ST4_HAND_CONTROL               OFF //     ON, ON for hand controller special features and SHC support.                 Option
                                           //         Hold [E]+[W] btns >2s: Guide rate   [E]-  [W]+  [N] trk on/off [S] sync
                                           //         Hold [N]+[S] btns >2s: Usr cat item [E]-  [W]+  [N] goto [S] snd on/off
-#define ST4_HAND_CONTROL_FOCUSER       ON //     ON, ON alternate to above: Focuser move [E]f1 [W]f2 [N]-     [S]+            Option
+#define ST4_HAND_CONTROL_FOCUSER       OFF //     ON, ON alternate to above: Focuser move [E]f1 [W]f2 [N]-     [S]+            Option
 
 // GUIDING BEHAVIOUR ------------------------------------------ see https://onstep.groups.io/g/main/wiki/Configuration_Mount#GUIDING
 #define GUIDE_TIME_LIMIT               30 //     10, n. Time limit n=0..120 seconds. Use 0 to disable.                        Adjust
@@ -347,8 +330,8 @@
 	#define SLEW_RATE_BASE_DESIRED        0.25  //    1.0, n. Desired slew rate in deg/sec. Adjustable at run-time from            <-Req'd
 											    //         1/2 to 2x this rate, and as MCU performace considerations require.
 	#define SLEW_RATE_MEMORY               ON   //    OFF, ON Remembers rates set across power cycles.                              Option
-	#define SLEW_ACCELERATION_DIST        2.0   //    5.0, n, (degrees.) Approx. distance for acceleration (and deceleration.)      Adjust
-	#define SLEW_RAPID_STOP_DIST          2.0   //    2.0, n, (degrees.) Approx. distance required to stop when a slew              Adjust
+	#define SLEW_ACCELERATION_DIST        1.0   //    5.0, n, (degrees.) Approx. distance for acceleration (and deceleration.)      Adjust
+	#define SLEW_RAPID_STOP_DIST          0.5   //    2.0, n, (degrees.) Approx. distance required to stop when a slew              Adjust
 											    //         is aborted or a limit is exceeded.
 #endif
 
@@ -377,7 +360,7 @@
   #define MFLIP_PAUSE_HOME_DEFAULT      OFF //    OFF, ON Start with meridian flip pause at home enabed.                        Infreq
   #define MFLIP_PAUSE_HOME_MEMORY       OFF //    OFF, ON Remember meridian flip pause at home setting across power cycles.     Infreq
   #define PIER_SIDE_SYNC_CHANGE_SIDES   ON  //    OFF, ON Allows sync to change pier side, for GEM mounts.                      Option
-  #define PIER_SIDE_PREFERRED_DEFAULT   BEST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
+  #define PIER_SIDE_PREFERRED_DEFAULT   EAST //   BEST, BEST Stays on current side if possible. EAST or WEST switch if possible. Option
   #define PIER_SIDE_PREFERRED_MEMORY    ON //    OFF, ON Remember preferred pier side setting across power cycles.             Option
 #endif
 
@@ -416,7 +399,7 @@
 #define AXIS3_DRIVER_IGOTO            OFF //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
 // /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
 
-#define AXIS3_DRIVER_STATUS           ON //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
+#define AXIS3_DRIVER_STATUS           OFF //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
 
 #define AXIS3_DRIVER_DECAY            OFF //    OFF, Tracking decay mode default override. TMC default is STEALTHCHOP.        Infreq
 #define AXIS3_DRIVER_DECAY_GOTO       OFF //    OFF, Decay mode goto default override. TMC default is SPREADCYCLE.            Infreq
@@ -433,38 +416,79 @@
 // Driver models (Step/Dir and Servo) many have specific requirements so be sure to follow the link below to help learn about these.
 // Typically: A4988, DRV8825, LV8729, S109, TMC2130S, etc.
 
-// AXIS4 FOCUSER 1 -------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Focuser
-#define AXIS4_DRIVER_MODEL            TMC2209 //    OFF, Enter motor driver model (above) to activate the focuser.                Option
-#define AXIS4_SLEW_RATE_BASE_DESIRED  500 //    500, n, Where n=200..5000 (um/s.) Adjustable at run-time from                <-Req'd
-                                          //         1/2 to 2x this rate, and as performance considerations require.
-#define AXIS4_SLEW_RATE_MINIMUM        20 //     20, n. Where n=5..200 (um/s.) Minimum microns/second.                        Adjust
 
-// If runtime axis settings are enabled changes in the section below may be ignored unless you reset to defaults:
-// \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
-#define AXIS4_STEPS_PER_MICRON        0.5 //    0.5, n. Steps per micrometer. Figure this out by testing or other means.      Adjust
-#define AXIS4_REVERSE                 OFF //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.    Option
-#define AXIS4_LIMIT_MIN                 0 //      0, n. Where n=0..500 (millimeters.) Minimum allowed position.               Adjust
-#define AXIS4_LIMIT_MAX                50 //     50, n. Where n=0..500 (millimeters.) Maximum allowed position.               Adjust
+#ifndef Kuppel  //hier 30er
 
-#define AXIS4_DRIVER_MICROSTEPS       OFF //    OFF, n. Microstep mode when tracking.                                         Option
-#define AXIS4_DRIVER_MICROSTEPS_GOTO  OFF //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
+	// AXIS4 FOCUSER 1 -------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Focuser
+	#define AXIS4_DRIVER_MODEL            TMC2209 //    OFF, Enter motor driver model (above) to activate the focuser.                Option
+	#define AXIS4_SLEW_RATE_BASE_DESIRED  1000    //    500, n, Where n=200..5000 (um/s.) Adjustable at run-time from                <-Req'd
+												  //         1/2 to 2x this rate, and as performance considerations require.
+	#define AXIS4_SLEW_RATE_MINIMUM        20      //     20, n. Where n=5..200 (um/s.) Minimum microns/second.                        Adjust
 
-// for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
-#define AXIS4_DRIVER_IHOLD            OFF //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
-#define AXIS4_DRIVER_IRUN             OFF //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
-#define AXIS4_DRIVER_IGOTO            OFF //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
-// /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
+	// If runtime axis settings are enabled changes in the section below may be ignored unless you reset to defaults:
+	// \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
+	#define AXIS4_STEPS_PER_MICRON        0.55 //    0.5, n. Steps per micrometer. Figure this out by testing or other means.      Adjust
+	#define AXIS4_REVERSE                 ON //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.    Option
+	#define AXIS4_LIMIT_MIN                 0 //      0, n. Where n=0..500 (millimeters.) Minimum allowed position.               Adjust
+	#define AXIS4_LIMIT_MAX                76 //     50, n. Where n=0..500 (millimeters.) Maximum allowed position.               Adjust
 
-#define AXIS4_DRIVER_STATUS           ON //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
+	#define AXIS4_DRIVER_MICROSTEPS       16 //    OFF, n. Microstep mode when tracking.                                         Option
+	#define AXIS4_DRIVER_MICROSTEPS_GOTO  4 //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
 
-#define AXIS4_DRIVER_DECAY            OFF //    OFF, Tracking decay mode default override. TMC default is STEALTHCHOP.        Infreq
-#define AXIS4_DRIVER_DECAY_GOTO       OFF //    OFF, Decay mode goto default override. TMC default is SPREADCYCLE.            Infreq
+	// for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
+	#define AXIS4_DRIVER_IHOLD            500 //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
+	#define AXIS4_DRIVER_IRUN             1200 //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
+	#define AXIS4_DRIVER_IGOTO            1200 //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
+	// /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
 
-#define AXIS4_POWER_DOWN              OFF //    OFF, ON Powers off 30 seconds after movement stops.                           Option
+	#define AXIS4_DRIVER_STATUS           OFF //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
 
-#define AXIS4_SENSE_HOME              OFF //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
-#define AXIS4_SENSE_LIMIT_MIN         OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
-#define AXIS4_SENSE_LIMIT_MAX         OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
+	#define AXIS4_DRIVER_DECAY            STEALTHCHOP //    OFF, Tracking decay mode default override. TMC default is STEALTHCHOP.        Infreq
+	#define AXIS4_DRIVER_DECAY_GOTO       STEALTHCHOP //    OFF, Decay mode goto default override. TMC default is SPREADCYCLE.            Infreq
+
+	#define AXIS4_POWER_DOWN              OFF //    OFF, ON Powers off 30 seconds after movement stops.                           Option
+
+	#define AXIS4_SENSE_HOME              OFF //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
+	#define AXIS4_SENSE_LIMIT_MIN         OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
+	#define AXIS4_SENSE_LIMIT_MAX         OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
+
+#else // Focuser Kuppel
+	
+	// AXIS4 FOCUSER 1 -------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Focuser
+	#define AXIS4_DRIVER_MODEL            TMC2209 //    OFF, Enter motor driver model (above) to activate the focuser.                Option
+	#define AXIS4_SLEW_RATE_BASE_DESIRED  1000    //    500, n, Where n=200..5000 (um/s.) Adjustable at run-time from                <-Req'd
+												  //         1/2 to 2x this rate, and as performance considerations require.
+	#define AXIS4_SLEW_RATE_MINIMUM        20      //     20, n. Where n=5..200 (um/s.) Minimum microns/second.                        Adjust
+
+	// If runtime axis settings are enabled changes in the section below may be ignored unless you reset to defaults:
+	// \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
+	#define AXIS4_STEPS_PER_MICRON        0.52 //    0.5, n. Steps per micrometer. Figure this out by testing or other means.      Adjust
+	#define AXIS4_REVERSE                 ON //    OFF, ON Reverses movement direction, or reverse wiring instead to correct.    Option
+	#define AXIS4_LIMIT_MIN                 0 //      0, n. Where n=0..500 (millimeters.) Minimum allowed position.               Adjust
+	#define AXIS4_LIMIT_MAX                80 //     50, n. Where n=0..500 (millimeters.) Maximum allowed position.               Adjust
+
+	#define AXIS4_DRIVER_MICROSTEPS       16 //    OFF, n. Microstep mode when tracking.                                         Option
+	#define AXIS4_DRIVER_MICROSTEPS_GOTO  4 //    OFF, n. Microstep mode used during slews. OFF uses _DRIVER_MICROSTEPS.        Option
+
+	// for TMC2130, TMC5160, TMC2209, TMC2226 STEP/DIR driver models:
+	#define AXIS4_DRIVER_IHOLD            500 //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
+	#define AXIS4_DRIVER_IRUN             1000 //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
+	#define AXIS4_DRIVER_IGOTO            1000 //    OFF, n, (mA.) Current during slews. OFF uses IRUN.                            Option
+	// /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /
+
+	#define AXIS4_DRIVER_STATUS           OFF //    OFF, ON, HIGH, or LOW.  For driver status info/fault detection.               Option
+
+	#define AXIS4_DRIVER_DECAY            STEALTHCHOP //    OFF, Tracking decay mode default override. TMC default is STEALTHCHOP.        Infreq
+	#define AXIS4_DRIVER_DECAY_GOTO       STEALTHCHOP //    OFF, Decay mode goto default override. TMC default is SPREADCYCLE.            Infreq
+
+	#define AXIS4_POWER_DOWN              OFF //    OFF, ON Powers off 30 seconds after movement stops.                           Option
+
+	#define AXIS4_SENSE_HOME              OFF //    OFF, HIGH or LOW enables & state clockwise home position, as seen from above. Option
+	#define AXIS4_SENSE_LIMIT_MIN         OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
+	#define AXIS4_SENSE_LIMIT_MAX         OFF //    OFF, HIGH or LOW state on limit sense switch stops movement.                  Option
+	
+#endif
+
 
 // AXIS5 FOCUSER 2 -----------------------------------------------------------------------------------------------------------------
 // Up to 6 focusers can be present (AXIS4 to AXIS9) simply copy the above text for focuser 1 and rename to AXIS5_ for focuser 2, etc

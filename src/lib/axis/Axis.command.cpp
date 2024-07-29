@@ -230,5 +230,3 @@ bool Axis::validateAxisSettings(int axisNum, AxisStoredSettings a) {
 }
 
 #endif
-
-
