@@ -4,6 +4,7 @@
 #if OPERATIONAL_MODE == WIFI
 
 #include "../tasks/OnTask.h"
+#include "../nv/Nv.h"
 
 #if STA_AUTO_RECONNECT == true
   void reconnectStationWrapper() { wifiManager.reconnectStation(); }
@@ -58,6 +59,7 @@ bool WifiManager::init() {
       VF("MSG: WiFi, Sta GATEWAY = "); VL(sta_gw.toString());
       VF("MSG: WiFi, Sta SN      = "); VL(sta_sn.toString());
       IPAddress target = IPAddress(sta->target);
+      UNUSED(target);
       VF("MSG: WiFi, Sta TARGET  = "); VL(target.toString());
     }
 

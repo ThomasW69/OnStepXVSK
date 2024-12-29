@@ -90,14 +90,15 @@ class Mount {
     // updates the tracking rates, etc. as appropriate for the mount state
     // called once a second by poll() but available here for immediate action
     void update();
-
+    void SelectTelescope(int TelType);
     void poll();
 
-    float trackingRate = 1.0F;            // in sidereal units 1x = 15 arc-seconds/sidereal second
-    float trackingRateAxis1 = 0.0F;       // in sidereal units 1x = 15 arc-seconds/sidereal second
-    float trackingRateAxis2 = 0.0F;       // in sidereal units 1x = 15 arc-seconds/sidereal second
-    float trackingRateOffsetRA = 0.0F;    // in sidereal units 1x = 15 arc-seconds/sidereal second
-    float trackingRateOffsetDec = 0.0F;   // in sidereal units 1x = 15 arc-seconds/sidereal second
+    // all in sidereal units 1x = 15 arc-seconds/sidereal second
+    float trackingRate = hzToSidereal(TRACKING_RATE_DEFAULT_HZ);
+    float trackingRateAxis1 = 0.0F;
+    float trackingRateAxis2 = 0.0F;
+    float trackingRateOffsetRA = 0.0F;
+    float trackingRateOffsetDec = 0.0F;
 
     MountSettings settings = {RC_DEFAULT, { 0, 0 }};
 

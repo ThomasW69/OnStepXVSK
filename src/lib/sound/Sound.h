@@ -12,7 +12,6 @@ class Sound {
     void alert(); // sound/buzzer
     void click(); // sound/beep
     void beep();  // sound/click
-    void OK();    // sound/OK
 
     bool enabled = STATUS_BUZZER_DEFAULT == ON;
   private:

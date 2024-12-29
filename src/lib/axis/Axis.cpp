@@ -4,6 +4,7 @@
 #include "Axis.h"
 
 #include "../tasks/OnTask.h"
+#include "../nv/Nv.h"
 
 #ifdef MOTOR_PRESENT
 
@@ -118,9 +119,9 @@ bool Axis::init(Motor *motor) {
   motor->setBacklashFrequencySteps(backlashFreq*settings.stepsPerMeasure);
 
   // start monitor
-  V(axisPrefix); VF("start monitor task (rate "); V(FRACTIONAL_SEC_US); VF("us priority 1)... ");
+  V(axisPrefix); VF("start motion controller task (rate "); V(FRACTIONAL_SEC_US); VF("us priority 1)... ");
   uint8_t taskHandle = 0;
-  char taskName[] = "Ax_Mtr";
+  char taskName[] = "Ax_Motn";
   taskName[2] = axisNumber + '0';
   taskHandle = tasks.add(0, 0, true, 1, callback, taskName);
   tasks.setPeriodMicros(taskHandle, FRACTIONAL_SEC_US);
@@ -689,14 +690,14 @@ bool Axis::motionError(Direction direction) {
 
   if (direction == DIR_FORWARD || direction == DIR_BOTH) {
     result = getInstrumentCoordinateSteps() > lroundf(0.9F*INT32_MAX) ||
-             (limitsCheck && homingStage == HOME_NONE && getInstrumentCoordinate() > settings.limits.max) ||
+             (limitsCheck && homingStage == HOME_NONE && getInstrumentCoordinate() > settings.limits.max + 1.0F/this->settings.stepsPerMeasure) ||
              (!commonMinMaxSense && errors.maxLimitSensed);
     if (result == true && result != lastErrorResult) { V(axisPrefix); VLF("motion error forward limit"); }
   } else
 
   if (direction == DIR_REVERSE || direction == DIR_BOTH) {
     result = getInstrumentCoordinateSteps() < lroundf(0.9F*INT32_MIN) ||
-             (limitsCheck && homingStage == HOME_NONE && getInstrumentCoordinate() < settings.limits.min) ||
+             (limitsCheck && homingStage == HOME_NONE && getInstrumentCoordinate() < settings.limits.min - 1.0F/this->settings.stepsPerMeasure) ||
              (!commonMinMaxSense && errors.minLimitSensed);
     if (result == true && result != lastErrorResult) { V(axisPrefix); VLF("motion error reverse limit"); }
   }

@@ -5,6 +5,8 @@
 
 #ifdef MOTOR_PRESENT
 
+#include "../../lib/nv/Nv.h"
+
 #include "../convert/Convert.h"
 
 bool Axis::command(char *reply, char *command, char *parameter, bool *supressFrame, bool *numericReply, CommandError *commandError) {
@@ -195,7 +197,8 @@ bool Axis::validateAxisSettings(int axisNum, AxisStoredSettings a) {
     maxLimitL = -360;
     maxLimitH = 360;
     stepsLimitL = 1.0;
-    stepsLimitH = 360000.0;
+    //stepsLimitH = 360000.0;
+    stepsLimitH = 900000.0;  //WTH Das, damit man auch höhere werte als 360000 eingeben kann für den neuen Motor
   }
 
   if (unitsRadians) {

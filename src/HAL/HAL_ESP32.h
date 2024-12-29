@@ -16,11 +16,7 @@
 #endif
 
 // Lower limit (fastest) step rate in uS for this platform (in SQW mode) and width of step pulse
-#if !defined(ESP_ARDUINO_VERSION) || ESP_ARDUINO_VERSION <= 131072 + 0 // version 2.0.0
-  #define HAL_MAXRATE_LOWER_LIMIT 16
-#else
-  #define HAL_MAXRATE_LOWER_LIMIT 40
-#endif
+#define HAL_MAXRATE_LOWER_LIMIT 16
 #define HAL_PULSE_WIDTH 200  // in ns, measured 1/18/22 (ESP32 v2.0.0)
 
 // New symbol for the default I2C port -------------------------------------------------------------
@@ -56,45 +52,17 @@
   #error "Configuration (Config.h): SERIAL_BT_MODE and SERIAL_IP_MODE can't be enabled at the same time, disable one or both options."
 #endif
 
-#if !defined(ESP_ARDUINO_VERSION) || ESP_ARDUINO_VERSION < 131072 + 3 // version 2.0.3
-  #ifndef ANALOG_READ_RANGE
-    #define ANALOG_READ_RANGE 4095
-  #endif
-  #define HAL_INIT() { \
-    analogWriteResolution(ANALOG_WRITE_PWM_BITS); \
-    SERIAL_BT_BEGIN(); \
-    if (I2C_SDA_PIN != OFF && I2C_SCL_PIN != OFF) { \
-      HAL_Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN); \
-      HAL_Wire.setClock(HAL_WIRE_CLOCK); \
-    } \
-  }
-#else
-  #ifdef ANALOG_WRITE_PWM_FREQUENCY
-    #ifndef ANALOG_READ_RANGE
-      #define ANALOG_READ_RANGE 1023
-    #endif
-    #define HAL_INIT() { \
-      analogReadResolution(10); \
-      analogWriteResolution(ANALOG_WRITE_PWM_BITS); \
-      analogWriteFrequency(ANALOG_WRITE_PWM_FREQUENCY); \
-      SERIAL_BT_BEGIN(); \
-      if (I2C_SDA_PIN != OFF && I2C_SCL_PIN != OFF) { \
-        HAL_Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN); \
-        HAL_Wire.setClock(HAL_WIRE_CLOCK); \
-      } \
-    }
-  #else
-    #define HAL_INIT() { \
-      analogReadResolution(10); \
-      analogWriteResolution(ANALOG_WRITE_PWM_BITS); \
-      SERIAL_BT_BEGIN(); \
-      if (I2C_SDA_PIN != OFF && I2C_SCL_PIN != OFF) { \
-        HAL_Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN); \
-        HAL_Wire.setClock(HAL_WIRE_CLOCK); \
-      } \
-    }
-  #endif
+#ifndef ANALOG_READ_RANGE
+  #define ANALOG_READ_RANGE 4095
 #endif
+#define HAL_INIT() { \
+  analogWriteResolution(ANALOG_WRITE_PWM_BITS); \
+  SERIAL_BT_BEGIN(); \
+  if (I2C_SDA_PIN != OFF && I2C_SCL_PIN != OFF) { \
+    HAL_Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN); \
+    HAL_Wire.setClock(HAL_WIRE_CLOCK); \
+  } \
+}
 
 //--------------------------------------------------------------------------------------------------
 // Internal MCU temperature (in degrees C)
@@ -114,11 +82,6 @@
 // a really short fixed delay (none needed)
 #define HAL_DELAY_25NS()
 
-#ifdef ARDUINO_ESP32C3_DEV
-  // stand-in for delayNanoseconds(), assumes 80MHz clock
-  #define delayNanoseconds(ns) { unsigned int c = ESP.getCycleCount() + ns/12.5F; do {} while ((int)(ESP.getCycleCount() - c) < 0); }
-#else
-  // stand-in for delayNanoseconds(), assumes 240MHz clock
-  #include "xtensa/core-macros.h"
-  #define delayNanoseconds(ns) { unsigned int c = xthal_get_ccount() + ns/4.166F; do {} while ((int)(xthal_get_ccount() - c) < 0); }
-#endif
+// stand-in for delayNanoseconds(), assumes 240MHz clock
+#include "xtensa/core-macros.h"
+#define delayNanoseconds(ns) { unsigned int c = xthal_get_ccount() + ns/4.166F; do {} while ((int)(xthal_get_ccount() - c) < 0); }

@@ -5,6 +5,8 @@
 
 #ifdef MOUNT_PRESENT
 
+#include "../../../lib/nv/Nv.h"
+
 #include "../park/Park.h"
 
 bool Home::command(char *reply, char *command, char *parameter, bool *supressFrame, bool *numericReply, CommandError *commandError) {
@@ -46,7 +48,7 @@ bool Home::command(char *reply, char *command, char *parameter, bool *supressFra
         setReversal();
       } else {
         long l = atol(&parameter[2]);
-        if (l >= -324000 || l <= 324000) {
+        if (l >= -648000 || l <= 648000) {
           settings.axis1.senseOffset = l;
         } else *commandError = CE_PARAM_RANGE;
       }
@@ -63,7 +65,7 @@ bool Home::command(char *reply, char *command, char *parameter, bool *supressFra
         setReversal();
       } else {
         long l = atol(&parameter[2]);
-        if (l >= -324000 || l <= 324000) {
+        if (l >= -648000 || l <= 648000) {
           settings.axis2.senseOffset = l;
         } else *commandError = CE_PARAM_RANGE;
       }
