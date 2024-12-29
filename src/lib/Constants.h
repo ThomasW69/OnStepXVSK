@@ -5,7 +5,6 @@
 #define AUTO                        -1
 #define OFF                         -1
 #define ON                          -2
-#define ALT                         -3
 #define AUX                         -4
 #define SLAVE                       -5
 #define BOTH                        -6

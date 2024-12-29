@@ -41,6 +41,7 @@
 // Use tabs "Config..." to configure OnStep to your requirements
 
 // Firmware version ----------------------------------------------------------------------------------------------------------------
+
 #define FirmwareName                "On-Step"
 #define FirmwareVersionMajor        10
 #define FirmwareVersionMinor        25     // minor version 00 to 99
