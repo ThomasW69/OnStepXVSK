@@ -432,6 +432,8 @@ bool Tasks::setTimingMode(uint8_t handle, TimingMode mode) {
 
 void Tasks::remove(uint8_t handle) {
   if (handle != 0 && allocated[handle - 1]) {
+    uint8_t hw_timer_number = task[handle - 1]->hardware_timer;
+    if (hw_timer_number) hardware_timer_allocated[hw_timer_number - 1] = false;
     delete task[handle - 1];
     allocated[handle - 1] = false;
     updateEventRange();
@@ -569,41 +571,26 @@ uint8_t Tasks::getHandleByName(const char name[]) {
   }
 #endif
 
-#ifdef TASKS_HIGHER_PRIORITY_ONLY
-  void Tasks::yield() {
-    ::yield();
-    for (uint8_t priority = 0; priority <= highest_priority; priority++) {
-      uint8_t last_priority = highest_active_priority;
-      if (priority < highest_active_priority) {
-        highest_active_priority = priority;
-        for (uint8_t i = 0; i <= highest_task; i++) {
-          if (++number[priority] > highest_task) number[priority] = 0;
-          if (allocated[number[priority]]) {
-            if (task[number[priority]]->getPriority() == priority) {
-              if (task[number[priority]]->isDurationComplete()) { remove(number[priority] + 1); highest_active_priority = last_priority; return; }
-              if (task[number[priority]]->poll()) { highest_active_priority = last_priority; return; }
-            }
-          }
-        }
-        highest_active_priority = last_priority;
-      }
-    }
-  }
-#else
-  void Tasks::yield() {
-    for (uint8_t priority = 0; priority <= highest_priority; priority++) {
+void Tasks::yield() {
+  static uint8_t highest_priority_active = 8;
+  ::yield();
+  for (uint8_t priority = 0; priority <= highest_priority; priority++) {
+    uint8_t last_priority = highest_priority_active;
+    if (priority < highest_priority_active) {
+      highest_priority_active = priority;
       for (uint8_t i = 0; i <= highest_task; i++) {
         if (++number[priority] > highest_task) number[priority] = 0;
         if (allocated[number[priority]]) {
           if (task[number[priority]]->getPriority() == priority) {
-            if (task[number[priority]]->isDurationComplete()) { remove(number[priority] + 1); return; }
-            if (task[number[priority]]->poll()) return;
+            if (task[number[priority]]->isDurationComplete()) { remove(number[priority] + 1); highest_priority_active = last_priority; return; }
+            if (task[number[priority]]->poll()) { highest_priority_active = last_priority; return; }
           }
         }
       }
+      highest_priority_active = last_priority;
     }
   }
-#endif
+}
 
 void Tasks::yield(unsigned long milliseconds) {
   unsigned long endTime = millis() + milliseconds;
@@ -613,6 +600,30 @@ void Tasks::yield(unsigned long milliseconds) {
 void Tasks::yieldMicros(unsigned long microseconds) {
   unsigned long endTime = micros() + microseconds;
   while ((long)(micros() - endTime) < 0) this->yield();
+}
+
+void Tasks::yieldAll() {
+  for (uint8_t priority = 0; priority <= highest_priority; priority++) {
+    for (uint8_t i = 0; i <= highest_task; i++) {
+      if (++number[priority] > highest_task) number[priority] = 0;
+      if (allocated[number[priority]]) {
+        if (task[number[priority]]->getPriority() == priority) {
+          if (task[number[priority]]->isDurationComplete()) { remove(number[priority] + 1); return; }
+          if (task[number[priority]]->poll()) return;
+        }
+      }
+    }
+  }
+}
+
+void Tasks::yieldAll(unsigned long milliseconds) {
+  unsigned long endTime = millis() + milliseconds;
+  while ((long)(millis() - endTime) < 0) this->yieldAll();
+}
+
+void Tasks::yieldAllMicros(unsigned long microseconds) {
+  unsigned long endTime = micros() + microseconds;
+  while ((long)(micros() - endTime) < 0) this->yieldAll();
 }
 
 void Tasks::updatePriorityRange() {

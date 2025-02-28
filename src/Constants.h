@@ -130,9 +130,6 @@
 
 // --------------------------------------------------------------------------------------------------------------------------
 
-// a short string describing this product
-#define PROD_ABV                    "OnStepX"
-
 // task manager
 #define TASKS_MAX                   52     // up to 52 tasks
 #define TASKS_SKIP_MISSED                  // just skip missed tasks if too late
@@ -150,7 +147,7 @@
 #define SERIAL_ST4_SERVER_PRESENT
 
 // NV -------------------------------------------------------------------------------------------------------------------
-#define INIT_NV_KEY                 583928941UL
+#define INIT_NV_KEY                 583928943UL
 
 #define NV_KEY                      0      // bytes: 4   , 4
 #define NV_SITE_NUMBER              4      // bytes: 1   , 1

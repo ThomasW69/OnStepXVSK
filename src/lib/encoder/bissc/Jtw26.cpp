@@ -5,7 +5,6 @@
 #ifdef HAS_JTW_26BIT
 
 // initialize BiSS-C encoder
-// nvAddress holds settings for the 9 supported axes, 9*4 = 72 bytes; set nvAddress 0 to disable
 Jtw26::Jtw26(int16_t maPin, int16_t sloPin, int16_t axis) {
   if (axis < 1 || axis > 9) return;
 
@@ -34,7 +33,7 @@ IRAM_ATTR bool Jtw26::readEnc(uint32_t &position) {
   #ifdef ESP32
     portMUX_TYPE bisscMutex = portMUX_INITIALIZER_UNLOCKED;
     taskENTER_CRITICAL(&bisscMutex);
-  #elif defined(__TEENSYDUINO__)
+  #else
     noInterrupts();
   #endif
 
@@ -112,7 +111,7 @@ IRAM_ATTR bool Jtw26::readEnc(uint32_t &position) {
 
   #ifdef ESP32
     taskEXIT_CRITICAL(&bisscMutex);
-  #elif defined(__TEENSYDUINO__)
+  #else
     interrupts();
   #endif
 

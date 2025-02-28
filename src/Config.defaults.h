@@ -2,6 +2,21 @@
 // controller settings
 #pragma once
 
+// host name for this microcontroller, by default used for the following if enabled/supported:
+// PRODUCT_DESCRIPTION    the user friendly name for this device, appears on websites etc.
+// HOST_NAME              the name ESP WiFi provides to any DHCP server (Ethernet doesn't support this)
+// MDNS_NAME              the name mDNS (Multicast DNS) clients see for IP address resolution
+// AP_SSID                the SSID WiFi clients see when the ESP WiFi Soft Access Point is enabled
+// SERIAL_BT_NAME         the name Bluetooth Servers see when the ESP32 Bluetooth client is enabled
+#ifndef HOST_NAME
+#define HOST_NAME                    "OnStep"
+#endif
+
+// settings identification
+#ifndef PRODUCT_DESCRIPTION
+#define PRODUCT_DESCRIPTION           HOST_NAME
+#endif
+
 // use the HAL specified default NV driver
 #ifndef NV_DRIVER
 #define NV_DRIVER                     NV_DEFAULT
@@ -24,11 +39,6 @@
 #endif
 #ifndef SERIAL_DEBUG_BAUD
 #define SERIAL_DEBUG_BAUD             9600
-#endif
-
-// identification
-#ifndef CONFIG_NAME
-#define CONFIG_NAME "OnStepX"
 #endif
 
 // flag hardware SPI as active
@@ -77,10 +87,25 @@
 #define SERIAL_BT_MODE                OFF                         // use SLAVE to enable the interface (ESP32 only)
 #endif
 #ifndef SERIAL_BT_NAME
-#define SERIAL_BT_NAME                "OnStepX"                   // Bluetooth name of command channel
+#define SERIAL_BT_NAME                HOST_NAME                   // Bluetooth name of command channel
+#endif
+#ifndef SERIAL_BT_PASSKEY
+#define SERIAL_BT_PASSKEY             ""                          // Bluetooth four digit passkey
 #endif
 
-// ESP32 virtual serial IP command channels
+// enable and customize WiFi functionality
+// for other default IP settings see the file:
+// src/lib/wifi/WifiManager.defaults.h
+
+#ifndef MDNS_SERVER
+#define MDNS_SERVER                   ON
+#endif
+
+#ifndef MDNS_NAME
+#define MDNS_NAME                     HOST_NAME
+#endif
+
+// translate Config.h IP settings into low level library settings
 #ifndef SERIAL_IP_MODE
 #define SERIAL_IP_MODE                OFF                         // use settings shown below to enable the interface
 #endif
@@ -88,7 +113,6 @@
 #define SERIAL_SERVER                 BOTH                        // STANDARD (port 9999) or PERSISTENT (ports 9996 to 9998)
 #endif
 
-// translate Config.h IP settings into low level library settings
 #if SERIAL_IP_MODE == ETHERNET_W5500
 #define OPERATIONAL_MODE ETHERNET_W5500
 #elif SERIAL_IP_MODE == ETHERNET_W5100
@@ -105,61 +129,19 @@
 #define STA_ENABLED true
 #endif
 
-#ifndef MDNS_SERVER
-#define MDNS_SERVER                  ON                           // mDNS enabled
-#endif
-#ifndef MDNS_NAME
-#define MDNS_NAME                    "onstepx"                    // mDNS device name
-#endif
-
-#ifndef AP_SSID
-#define AP_SSID                       "OnStepX"                   // Wifi Access Point SSID
-#endif
-#ifndef AP_PASSWORD
-#define AP_PASSWORD                   "password"                  // Wifi Access Point password
-#endif
-#ifndef AP_CHANNEL
-#define AP_CHANNEL                    7                           // Wifi Access Point channel
-#endif
-#ifndef AP_IP_ADDR
-#define AP_IP_ADDR                    {192,168,0,1}               // Wifi Access Point IP Address
-#endif
-#ifndef AP_GW_ADDR
-#define AP_GW_ADDR                    {192,168,0,1}               // Wifi Access Point GATEWAY Address
-#endif
-#ifndef AP_SN_MASK
-#define AP_SN_MASK                    {255,255,255,0}             // Wifi Access Point SUBNET Mask
-#endif
-
 #ifndef STA_AP_FALLBACK
 #define STA_AP_FALLBACK               true                        // activate SoftAP if station fails to connect
 #endif
+
 #ifndef STA_AUTO_RECONNECT
 #define STA_AUTO_RECONNECT            true                        // automatically reconnect if connection is dropped
-#endif
-#ifndef STA_SSID
-#define STA_SSID                      "Home"                      // Station SSID to connnect to
-#endif
-#ifndef STA_PASSWORD
-#define STA_PASSWORD                  "password"                  // Wifi Station mode password
-#endif
-#ifndef STA_DHCP_ENABLED
-#define STA_DHCP_ENABLED              false                       // Wifi Station/Ethernet DHCP enabled
-#endif
-#ifndef STA_IP_ADDR
-#define STA_IP_ADDR                   {192,168,0,2}               // Wifi Station/Ethernet IP Address
-#endif
-#ifndef STA_GW_ADDR
-#define STA_GW_ADDR                   {192,168,0,1}               // Wifi Station/Ethernet GATEWAY Address
-#endif
-#ifndef STA_SN_MASK
-#define STA_SN_MASK                   {255,255,255,0}             // Wifi Station/Ethernet SUBNET Mask.
 #endif
 
 #ifndef TIME_IP_ADDR
 #define TIME_IP_ADDR                  {129,6,15,28}               // for NTP if enabled we often use an address like
 #endif                                                            // time-a-g.nist.gov at 129,6,15,28 or 129,6,15,29, 129,6,15,30, etc.
 
+// some CAN defaults
 #ifndef CAN_PLUS
 #define CAN_PLUS                      OFF                         // Select from CAN_SAN, CAN_ESP32, CAN_MCP2515, CANn_TEENSY4
 #endif
@@ -409,6 +391,9 @@
   #define AXIS1_ODRIVE_D                1.0                       // D = derivative
   #endif
 #endif
+#if AXIS1_DRIVER_MODEL == KTECH
+  #define AXIS1_KTECH_PRESENT
+#endif
 
 #ifndef AXIS2_DRIVER_MODEL
 #define AXIS2_DRIVER_MODEL            OFF                         // specify a driver to enable
@@ -584,6 +569,9 @@
   #ifndef AXIS2_ODRIVE_D
   #define AXIS2_ODRIVE_D                 1.0                       // D = derivative
   #endif
+#endif
+#if AXIS2_DRIVER_MODEL == KTECH
+  #define AXIS2_KTECH_PRESENT
 #endif
 
 // decode internal mount type, tangent arm, azm wrap
@@ -1070,6 +1058,9 @@
   #define AXIS3_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS3_DRIVER_MODEL == KTECH
+  #define AXIS3_KTECH_PRESENT
+#endif
 
 // -----------------------------------------------------------------------------------
 // focuser settings, all
@@ -1109,6 +1100,9 @@
 #endif
 #ifndef AXIS4_POWER_DOWN_TIME
 #define AXIS4_POWER_DOWN_TIME         30000                       // power down time in milliseconds
+#endif
+#ifndef AXIS4_SLAVED_TO_FOCUSER
+#define AXIS4_SLAVED_TO_FOCUSER       0                           // focuser to slave to, or 0 to disable
 #endif
 #ifndef AXIS4_ENABLE_STATE
 #define AXIS4_ENABLE_STATE            LOW                         // enable pin state when driver is active
@@ -1264,6 +1258,9 @@
   #define AXIS4_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS4_DRIVER_MODEL == KTECH
+  #define AXIS4_KTECH_PRESENT
+#endif
 
 // focuser settings, FOCUSER2
 #ifndef AXIS5_DRIVER_MODEL
@@ -1280,6 +1277,9 @@
 #endif
 #ifndef AXIS5_POWER_DOWN_TIME
 #define AXIS5_POWER_DOWN_TIME         30000
+#endif
+#ifndef AXIS5_SLAVED_TO_FOCUSER
+#define AXIS5_SLAVED_TO_FOCUSER       0
 #endif
 #ifndef AXIS5_ENABLE_STATE
 #define AXIS5_ENABLE_STATE            LOW
@@ -1435,6 +1435,9 @@
   #define AXIS5_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS5_DRIVER_MODEL == KTECH
+  #define AXIS5_KTECH_PRESENT
+#endif
 
 // focuser settings, FOCUSER3
 #ifndef AXIS6_DRIVER_MODEL
@@ -1451,6 +1454,9 @@
 #endif
 #ifndef AXIS6_POWER_DOWN_TIME
 #define AXIS6_POWER_DOWN_TIME         30000
+#endif
+#ifndef AXIS6_SLAVED_TO_FOCUSER
+#define AXIS6_SLAVED_TO_FOCUSER       0
 #endif
 #ifndef AXIS6_ENABLE_STATE
 #define AXIS6_ENABLE_STATE            LOW
@@ -1606,6 +1612,9 @@
   #define AXIS6_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS6_DRIVER_MODEL == KTECH
+  #define AXIS6_KTECH_PRESENT
+#endif
 
 // focuser settings, FOCUSER4
 #ifndef AXIS7_DRIVER_MODEL
@@ -1622,6 +1631,9 @@
 #endif
 #ifndef AXIS7_POWER_DOWN_TIME
 #define AXIS7_POWER_DOWN_TIME         30000
+#endif
+#ifndef AXIS7_SLAVED_TO_FOCUSER
+#define AXIS7_SLAVED_TO_FOCUSER       0
 #endif
 #ifndef AXIS7_ENABLE_STATE
 #define AXIS7_ENABLE_STATE            LOW
@@ -1777,6 +1789,9 @@
   #define AXIS7_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS7_DRIVER_MODEL == KTECH
+  #define AXIS7_KTECH_PRESENT
+#endif
 
 // focuser settings, FOCUSER5
 #ifndef AXIS8_DRIVER_MODEL
@@ -1793,6 +1808,9 @@
 #endif
 #ifndef AXIS8_POWER_DOWN_TIME
 #define AXIS8_POWER_DOWN_TIME         30000
+#endif
+#ifndef AXIS8_SLAVED_TO_FOCUSER
+#define AXIS8_SLAVED_TO_FOCUSER       0
 #endif
 #ifndef AXIS8_ENABLE_STATE
 #define AXIS8_ENABLE_STATE            LOW
@@ -1948,6 +1966,9 @@
   #define AXIS8_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS8_DRIVER_MODEL == KTECH
+  #define AXIS8_KTECH_PRESENT
+#endif
 
 // focuser settings, FOCUSER6
 #ifndef AXIS9_DRIVER_MODEL
@@ -1964,6 +1985,9 @@
 #endif
 #ifndef AXIS9_POWER_DOWN_TIME
 #define AXIS9_POWER_DOWN_TIME         30000
+#endif
+#ifndef AXIS9_SLAVED_TO_FOCUSER
+#define AXIS9_SLAVED_TO_FOCUSER       0
 #endif
 #ifndef AXIS9_ENABLE_STATE
 #define AXIS9_ENABLE_STATE            LOW
@@ -2119,6 +2143,9 @@
   #define AXIS9_ENCODER_REVERSE         OFF
   #endif
 #endif
+#if AXIS9_DRIVER_MODEL == KTECH
+  #define AXIS9_KTECH_PRESENT
+#endif
 
 #if defined(AXIS1_STEP_DIR_LEGACY) || defined(AXIS2_STEP_DIR_LEGACY) || defined(AXIS3_STEP_DIR_LEGACY) || \
     defined(AXIS4_STEP_DIR_LEGACY) || defined(AXIS5_STEP_DIR_LEGACY) || defined(AXIS6_STEP_DIR_LEGACY) || \
@@ -2191,7 +2218,20 @@
   #define SERVO_TMC5160_PRESENT
 #endif
 
-#if defined(SERVO_DC_PRESENT) || defined (SERVO_DC_TMC_SPI_PRESENT) || defined(SERVO_TMC2209_PRESENT) || defined (SERVO_TMC5160_PRESENT)
+#if AXIS1_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS2_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS3_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS4_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS5_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS6_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS7_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS8_DRIVER_MODEL == SERVO_KTECH || \
+    AXIS9_DRIVER_MODEL == SERVO_KTECH
+  #define SERVO_KTECH_PRESENT
+#endif
+
+#if defined(SERVO_DC_PRESENT) || defined(SERVO_DC_TMC_SPI_PRESENT) || \
+    defined(SERVO_TMC2209_PRESENT) || defined(SERVO_TMC5160_PRESENT) || defined(SERVO_KTECH_PRESENT)
   #define SERVO_MOTOR_PRESENT
 #endif
 
@@ -2226,7 +2266,19 @@
                                                                   // or 1/0.7583 = 1.32 arc-min/tick;  1.32*60 sec = 79.2 arc sec per encoder tick
 #endif
 
-#if defined(SERVO_MOTOR_PRESENT) || defined(STEP_DIR_MOTOR_PRESENT) || defined(ODRIVE_MOTOR_PRESENT)
+#if defined(AXIS1_KTECH_PRESENT) || \
+    defined(AXIS2_KTECH_PRESENT) || \
+    defined(AXIS3_KTECH_PRESENT) || \
+    defined(AXIS4_KTECH_PRESENT) || \
+    defined(AXIS5_KTECH_PRESENT) || \
+    defined(AXIS6_KTECH_PRESENT) || \
+    defined(AXIS7_KTECH_PRESENT) || \
+    defined(AXIS8_KTECH_PRESENT) || \
+    defined(AXIS9_KTECH_PRESENT)
+  #define KTECH_MOTOR_PRESENT
+#endif
+
+#if defined(SERVO_MOTOR_PRESENT) || defined(STEP_DIR_MOTOR_PRESENT) || defined(ODRIVE_MOTOR_PRESENT) || defined(KTECH_MOTOR_PRESENT)
   #define MOTOR_PRESENT
 #endif
 
