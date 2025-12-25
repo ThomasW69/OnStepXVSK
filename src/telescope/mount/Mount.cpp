@@ -43,22 +43,24 @@ void Mount::init() {
 
   // get the main axes ready
   delay(100);
-  if (!axis1.init(&motor1)) { initError.driver = true; DLF("ERR: Axis1, no motion controller!"); }
-  axis1.setBacklash(settings.backlash.axis1);
-  axis1.setMotionLimitsCheck(false);
-  if (AXIS1_POWER_DOWN == ON) axis1.setPowerDownTime(AXIS1_POWER_DOWN_TIME);
-  #ifdef AXIS1_ENCODER_ORIGIN
-    if (AXIS1_ENCODER_ORIGIN == 0) axis1.motor->encoderSetOrigin(nv.readUL(NV_AXIS_ENCODER_ZERO_BASE));
-  #endif
+  if (!axis1.init(&motor1)) { initError.driver = true; DLF("ERR: Mount::init(), no motion controller for Axis1!"); } else {
+    axis1.setBacklash(settings.backlash.axis1);
+    axis1.setMotionLimitsCheck(false);
+    if (AXIS1_POWER_DOWN == ON) axis1.setPowerDownTime(AXIS1_POWER_DOWN_TIME);
+    #ifdef AXIS1_ENCODER_ORIGIN
+      if (AXIS1_ENCODER_ORIGIN == 0) axis1.motor->encoderSetOrigin(nv.readUL(NV_AXIS_ENCODER_ZERO_BASE));
+    #endif
+  }
 
   delay(100);
-  if (!axis2.init(&motor2)) { initError.driver = true; DLF("ERR: Axis2, no motion controller!"); }
-  axis2.setBacklash(settings.backlash.axis2);
-  axis2.setMotionLimitsCheck(false);
-  if (AXIS2_POWER_DOWN == ON) axis2.setPowerDownTime(AXIS2_POWER_DOWN_TIME);
-  #ifdef AXIS2_ENCODER_ORIGIN
-    if (AXIS2_ENCODER_ORIGIN == 0) axis2.motor->encoderSetOrigin(nv.readUL(NV_AXIS_ENCODER_ZERO_BASE + 4));
-  #endif
+  if (!axis2.init(&motor2)) { initError.driver = true; DLF("ERR: Mount::init(), no motion controller for Axis2!"); } else {
+    axis2.setBacklash(settings.backlash.axis2);
+    axis2.setMotionLimitsCheck(false);
+    if (AXIS2_POWER_DOWN == ON) axis2.setPowerDownTime(AXIS2_POWER_DOWN_TIME);
+    #ifdef AXIS2_ENCODER_ORIGIN
+      if (AXIS2_ENCODER_ORIGIN == 0) axis2.motor->encoderSetOrigin(nv.readUL(NV_AXIS_ENCODER_ZERO_BASE + 4));
+    #endif
+  }
 }
 
 void Mount::begin() {
@@ -85,8 +87,8 @@ void Mount::begin() {
 
   if (AXIS1_WRAP == ON) {
     axis1.coordinateWrap(Deg360);
-    axis1.settings.limits.min = -Deg360;
-    axis1.settings.limits.max = Deg360;
+    axis1.setLimitMin(-Deg360);
+    axis1.setLimitMax(Deg360);
   }
 
   goTo.init();
@@ -177,7 +179,7 @@ void Mount::autostartPostponed() {
       VLF("MSG: Mount, autostart park restore");
       CommandError e = park.restore(TRACK_AUTOSTART == ON);
       if (e != CE_NONE) {
-        VF("WRN: Mount, autostart park restore failed with code "); VL(e);
+        DF("WRN: Mount, autostart park restore failed with code "); DL(e);
         autoStartDone = true;
         return;
       }
@@ -191,7 +193,7 @@ void Mount::autostartPostponed() {
     VLF("MSG: Mount, autostart home");
     CommandError e = home.request();
     if (e != CE_NONE) {
-      VF("WRN: Mount, autostart home request failed with code "); VL(e);
+      DF("WRN: Mount, autostart home request failed with code "); DL(e);
       autoStartDone = true;
       return;
     }
@@ -475,74 +477,6 @@ void Mount::updatePosition(CoordReturn coordReturn) {
     if (coordReturn == CR_MOUNT_HOR || coordReturn == CR_MOUNT_ALL) transform.equToHor(&current);
   }
 }
-
-//@WTH=====================================================================
-//Funktion wählt das Teleskop und setzt die Limits für den Tangentialarm
-// Schiebdach:
-// TelType 1 = 30e in Schiebedach
-// TelType 2 = Schiefspiegler im Schiebedach
-// Kuppel
-// TelType 1 = Newton
-// TelType 2 = Kühn-Slevogt
-
-
-void Mount::SelectTelescope(int TelType) {
-
-#ifndef Kuppel	 //nur beim 30er sind Tangentialarme unterschiedlich
-    if (TelType == 1) {
-        //Getriebedaten für den 30er auswählen
-        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE;
-        axis2.settings.limits.min = degToRadF(AXIS2_LIMIT_MIN);
-        axis2.settings.limits.max = degToRadF(AXIS2_LIMIT_MAX);
-        // preferredPierSideDefault = WEST;
-        VLF("MSG: Normale Teleskopseite");
-    }
-    else if (TelType == 2) {
-        //Getriebedaten für den Schiefspiegler auswählen 
-        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE2;
-        axis2.settings.limits.min = degToRadF(AXIS2_LIMIT_MIN2);
-        axis2.settings.limits.max = degToRadF(AXIS2_LIMIT_MAX2);
-        //preferredPierSideDefault = EAST;
-        VLF("MSG: Schiefspiegler");
-    }
-    else {
-        //Ansonsten immer den 30 er nehmen
-        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE;
-        axis2.settings.limits.min = degToRadF(AXIS2_LIMIT_MIN);
-        axis2.settings.limits.max = degToRadF(AXIS2_LIMIT_MAX);
-        //preferredPierSideDefault = WEST;
-        VLF("MSG: 30er Cassegrain");
-    }
-#else     //für Kuppel 
-    if (TelType == 1) {
-        //Getriebedaten für den Newton
-        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE;
-        axis2.settings.limits.min = degToRadF(AXIS2_LIMIT_MIN);
-        axis2.settings.limits.max = degToRadF(AXIS2_LIMIT_MAX);
-        //preferredPierSideDefault = EAST;
-        VLF("MSG: Newton");
-    }
-    else if (TelType == 2) {
-        //Getriebedaten für den Schiefspiegler auswählen 
-        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE2;
-        axis2.settings.limits.min = (AXIS2_LIMIT_MIN);
-        axis2.settings.limits.max = (AXIS2_LIMIT_MAX);
-        //preferredPierSideDefault = WEST;
-        VLF("MSG: Kuehn-Slevogt");
-    }
-    else {
-        //Ansonsten immer den 30 er nehmen
-        axis2.settings.stepsPerMeasure = AXIS2_STEPS_PER_DEGREE;
-        axis2.settings.limits.min = AXIS2_LIMIT_MIN;
-        axis2.settings.limits.max = AXIS2_LIMIT_MAX;
-        //preferredPierSideDefault = EAST;
-        VLF("MSG: NEWTON");
-    }
-#endif
-}
- 
-//@WTH=====================================================================
-
 
 Mount mount;
 

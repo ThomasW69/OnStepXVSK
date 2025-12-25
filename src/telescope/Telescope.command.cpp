@@ -106,8 +106,11 @@ bool Telescope::command(char reply[], char command[], char parameter[], bool *su
       if (command[1] == '-') reticleBrightness += scale;
       if (reticleBrightness > 255) reticleBrightness = 255;
       if (command[1] == '+') reticleBrightness -= scale;
-      if (reticleBrightness < 0)   reticleBrightness = 0;
-      analogWrite(RETICLE_LED_PIN, analog8BitToAnalogRange(RETICLE_LED_INVERT == ON ? 255 - reticleBrightness : reticleBrightness));
+      if (reticleBrightness < 0) reticleBrightness = 0;
+
+      float duty = (float)b*(1.0F/255.0F);
+      analog.write(RETICLE_LED_PIN, RETICLE_LED_INVERT == ON ? duty : 1.0F - duty);
+      
       #if RETICLE_LED_MEMORY == ON
         nv.write(NV_TELESCOPE_SETTINGS_BASE, reticleBrightness);
       #endif
@@ -122,6 +125,8 @@ bool Telescope::command(char reply[], char command[], char parameter[], bool *su
     if (command[1] == 'C') {
       // spaces are encoded as '_'
       for (unsigned int i = 0; i < strlen(parameter); i++) if (parameter[i] == '_') parameter[i] = ' ';
+      // prefix with "REM> "
+      if (strstr(parameter, "ERR:") == parameter || strstr(parameter, "WRN:") == parameter || strstr(parameter, "MSG:") == parameter) D("REM> ");
       // a newline is encoded as '&' in the last char of message
       int l = strlen(parameter);
       if (l > 0 && parameter[l - 1] == '&') { parameter[l - 1] = 0; DL(parameter); } else { D(parameter); }
@@ -183,13 +188,16 @@ bool Telescope::command(char reply[], char command[], char parameter[], bool *su
     //            Returns: HH:MM:SS#
     // :GVC#      Get Firmware Config Name
     //            Returns: s#
+    // :GVH#      Get Firmware Hardware
+    //            Returns: s#
     if (command[1] == 'V' && parameter[1] == 0) {
       if (parameter[0] == 'D') strcpy(reply, firmware.date); else
       if (parameter[0] == 'M') sprintf(reply, "%s %i.%02i%s", firmware.name, firmware.version.major, firmware.version.minor, firmware.version.patch); else
       if (parameter[0] == 'N') sprintf(reply, "%i.%02i%s", firmware.version.major, firmware.version.minor, firmware.version.patch); else
       if (parameter[0] == 'P') strcpy(reply, firmware.name); else
       if (parameter[0] == 'T') strcpy(reply, firmware.time); else
-      if (parameter[0] == 'C') strncpy(reply, PRODUCT_DESCRIPTION, 40); else *commandError = CE_CMD_UNKNOWN;
+      if (parameter[0] == 'C') { sstrcpy(reply, PRODUCT_DESCRIPTION, 40); } else
+      if (parameter[0] == 'H') strcpy(reply, PINMAP_STR); else *commandError = CE_CMD_UNKNOWN;
       *numericReply = false;
     } else
 

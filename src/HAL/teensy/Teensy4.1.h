@@ -21,6 +21,14 @@
   #define ANALOG_WRITE_RANGE 255
 #endif
 
+// analog read/write capabilities
+#define HAL_HAS_PER_PIN_PWM_RESOLUTION 0
+#define HAL_HAS_PER_PIN_PWM_FREQUENCY 1
+#define HAL_HAS_GLOBAL_PWM_RESOLUTION 1
+#define HAL_HAS_GLOBAL_PWM_FREQUENCY 0
+#define HAL_PWM_BITS_MAX 16
+#define HAL_PWM_HZ_MAX 200000U
+
 // Lower limit (fastest) step rate in uS for this platform (in SQW mode) and width of step pulse
 #define HAL_MAXRATE_LOWER_LIMIT 1.5
 #define HAL_PULSE_WIDTH 0  // effectively disable pulse mode
@@ -29,7 +37,9 @@
 
 // New symbol for the default I2C port -------------------------------------------------------------
 #include <Wire.h>
-#define HAL_WIRE Wire
+#ifndef HAL_WIRE
+  #define HAL_WIRE Wire
+#endif
 #ifndef HAL_WIRE_CLOCK
   #define HAL_WIRE_CLOCK 100000
 #endif
@@ -49,8 +59,6 @@
 #include "imxrt.h"
 
 #define HAL_INIT() { \
-  analogReadResolution((int)log2(ANALOG_READ_RANGE + 1)); \
-  analogWriteResolution((int)log2(ANALOG_WRITE_RANGE + 1)); \
 }
 
 #define HAL_RESET() { \
@@ -70,3 +78,6 @@
 
 // a really short fixed delay
 #define HAL_DELAY_25NS() delayNanoseconds(20)
+
+// current nanoseconds, rolls over about every 4.3 seconds
+#define nanoseconds() ((unsigned long)((unsigned long long)(ARM_DWT_CYCCNT)*(1E9/F_CPU)))

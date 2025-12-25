@@ -88,6 +88,8 @@ class Rotator {
 
     RotatorSettings settings = {PS_UNPARKED, 0, 0.0F, AXIS3_SLEW_RATE_BASE_DESIRED};
 
+    bool ready = false;
+
     bool derotatorEnabled = false;
     bool derotatorReverse = false;
     bool homing = false;
@@ -102,6 +104,8 @@ class Rotator {
   extern StepDirMotor motor3;
 #elif defined(AXIS3_SERVO_PRESENT)
   extern ServoMotor motor3;
+#elif defined(AXIS3_KTECH_PRESENT)
+  extern KTechMotor motor3;
 #endif
 extern Axis axis3;
 

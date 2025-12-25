@@ -59,37 +59,37 @@ void Focuser::init() {
 
   // get the motion controllers ready
   #if AXIS4_DRIVER_MODEL != OFF
-    if (!axis4.init(&motor4)) { initError.driver = true; DLF("ERR: Axis4, no motion controller!"); } else {
+    if (!axis4.init(&motor4)) { initError.driver = true; DLF("ERR: Focuser::init(), no motion controller for Axis4!"); } else {
       VLF("MSG: Focuser1, init (Axis4)");
       axes[0] = &axis4;
     }
   #endif
   #if AXIS5_DRIVER_MODEL != OFF
-    if (!axis5.init(&motor5)) { initError.driver = true; DLF("ERR: Axis5, no motion controller!"); } else {
+    if (!axis5.init(&motor5)) { initError.driver = true; DLF("ERR: Focuser::init(), no motion controller for Axis5!"); } else {
       VLF("MSG: Focuser2, init (Axis5)");
       axes[1] = &axis5;
     }
   #endif
   #if AXIS6_DRIVER_MODEL != OFF
-    if (!axis6.init(&motor6)) { initError.driver = true; DLF("ERR: Axis6, no motion controller!"); } else {
+    if (!axis6.init(&motor6)) { initError.driver = true; DLF("ERR: Focuser::init(), no motion controller for Axis6!"); } else {
       VLF("MSG: Focuser3, init (Axis6)");
       axes[2] = &axis6;
     }
   #endif
   #if AXIS7_DRIVER_MODEL != OFF
-    if (!axis7.init(&motor7)) { initError.driver = true; DLF("ERR: Axis7, no motion controller!"); } else {
+    if (!axis7.init(&motor7)) { initError.driver = true; DLF("ERR: Focuser::init(), no motion controller for Axis7!"); } else {
       VLF("MSG: Focuser4, init (Axis7)");
       axes[3] = &axis7;
     }
   #endif
   #if AXIS8_DRIVER_MODEL != OFF
-    if (!axis8.init(&motor8)) { initError.driver = true; DLF("ERR: Axis8, no motion controller!"); } else {
+    if (!axis8.init(&motor8)) { initError.driver = true; DLF("ERR: Focuser::init(), no motion controller for Axis8!"); } else {
       VLF("MSG: Focuser5, init (Axis8)");
       axes[4] = &axis8;
     }
   #endif
   #if AXIS9_DRIVER_MODEL != OFF
-    if (!axis9.init(&motor9)) { initError.driver = true; DLF("ERR: Axis9, no motion controller!"); } else {
+    if (!axis9.init(&motor9)) { initError.driver = true; DLF("ERR: Focuser::init(), no motion controller for Axis9!"); } else {
       VLF("MSG: Focuser6, init (Axis9)");
       axes[5] = &axis9;
     }
@@ -135,14 +135,14 @@ void Focuser::init() {
         // TCF defaults to disabled at startup
         settings[index].tcf.enabled = false;
 
-        if (settings[index].position < axes[index]->settings.limits.min) {
-          settings[index].position = axes[index]->settings.limits.min;
+        if (settings[index].position < axes[index]->getLimitMin()) {
+          settings[index].position = axes[index]->getLimitMin();
           initError.value = true;
           DLF("ERR: Focuser.init(), bad NV park pos < _LIMIT_MIN (set to _LIMIT_MIN)");
         }
 
-        if (settings[index].position > axes[index]->settings.limits.max) {
-          settings[index].position = axes[index]->settings.limits.max;
+        if (settings[index].position > axes[index]->getLimitMax()) {
+          settings[index].position = axes[index]->getLimitMax();
           initError.value = true;
           DLF("ERR: Focuser.init(), bad NV park pos > _LIMIT_MAX steps (set to _LIMIT_MAX)");
         }
@@ -175,7 +175,7 @@ void Focuser::begin() {
     if (FOCUSER_BUTTON_FOCUSER_INDEX - 1 < 0 ||
         FOCUSER_BUTTON_FOCUSER_INDEX - 1 >= FOCUSER_MAX ||
         axes[FOCUSER_BUTTON_FOCUSER_INDEX - 1] == NULL) {
-      VLF("WRN: Focusers, starting button monitor failed invalid FOCUSER_BUTTON_FOCUSER_INDEX");
+      DLF("WRN: Focusers, starting button monitor failed invalid FOCUSER_BUTTON_FOCUSER_INDEX");
       return;
     }
 
@@ -306,12 +306,12 @@ float Focuser::getHomePosition(int index) {
   
   switch (configuration[index].homeDefault) {
     case MAXIMUM:
-      return lround(axes[index]->settings.limits.max);
+      return lround(axes[index]->getLimitMax());
     case MIDDLE:
-      return lround((axes[index]->settings.limits.max + axes[index]->settings.limits.min)/2.0F);
+      return lround((axes[index]->getLimitMax() + axes[index]->getLimitMin())/2.0F);
     case MINIMUM:
     default:
-      return lround(axes[index]->settings.limits.min);
+      return lround(axes[index]->getLimitMin());
   }
 }
 
@@ -575,7 +575,7 @@ void Focuser::monitor() {
           } else tcfSteps[index] = 0;
 
           if (homing[index]) {
-            long p = round((axes[index]->settings.limits.max + axes[index]->settings.limits.min)/2.0F)*axes[index]->getStepsPerMeasure();
+            long p = round((axes[index]->getLimitMax() + axes[index]->getLimitMin())/2.0F)*axes[index]->getStepsPerMeasure();
             axes[index]->resetPositionSteps(p);
             axes[index]->setBacklash(getBacklash(index));
             homing[index] = false;

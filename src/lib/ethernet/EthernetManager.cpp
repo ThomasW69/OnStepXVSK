@@ -1,7 +1,7 @@
 // ethernet manager, used by the webserver and ethernet serial IP
 #include "EthernetManager.h"
 
-#if defined(OPERATIONAL_MODE) && (OPERATIONAL_MODE == ETHERNET_W5100 || OPERATIONAL_MODE == ETHERNET_W5500)
+#if OPERATIONAL_MODE >= ETHERNET_FIRST && OPERATIONAL_MODE <= ETHERNET_LAST
 
 #include "../tasks/OnTask.h"
 #include "../nv/Nv.h"
@@ -9,23 +9,37 @@
 #if MDNS_SERVER == ON
   enum MdnsReady {MD_WAIT, MD_READY, MD_FAIL};
 
-  EthernetUDP udp;
-  MDNS mdns(udp);
+  #if OPERATIONAL_MODE != ETHERNET_TEENSY41
+    EthernetUDP udp;
+    MDNS mdns(udp);
+  #endif
 
   void mdnsPoll() {
     static MdnsReady mdnsReady = MD_WAIT;
     if (mdnsReady == MD_WAIT && millis() > 5000) {
       char name[] = MDNS_NAME;
       strtohostname2(name);
-      if (mdns.begin(Ethernet.localIP(), name)) {
+      #if OPERATIONAL_MODE == ETHERNET_TEENSY41
+        MDNS.begin(name, 1);
         VF("MSG: Ethernet, mDNS started for "); VL(name);
+        // MDNS.addService("_http._tcp", 80); // adding a webserver service would look like this
         mdnsReady = MD_READY;
-      } else {
-        VF("WRN: Ethernet, mDNS start FAILED for "); VL(name);
-        mdnsReady = MD_FAIL;
-      }
+      #else
+        if (mdns.begin(Ethernet.localIP(), name)) {
+          VF("MSG: Ethernet, mDNS started for "); VL(name);
+          mdnsReady = MD_READY;
+        } else {
+          DF("WRN: Ethernet, mDNS start FAILED for "); DL(name);
+          mdnsReady = MD_FAIL;
+        }
+      #endif
     }
-    if (mdnsReady == MD_READY) mdns.run();
+
+    if (mdnsReady == MD_READY) {
+      #if OPERATIONAL_MODE != ETHERNET_TEENSY41
+        mdns.run();
+      #endif
+    }
   }
 #endif
 
@@ -52,6 +66,17 @@ bool EthernetManager::init() {
     } else {
       Ethernet.begin(settings.mac, settings.ip, settings.dns, settings.gw, settings.sn);
     }
+
+    if (Ethernet.hardwareStatus() == EthernetNoHardware) {
+      DLF("WRN: Ethernet, no hardware");
+      return false;
+    }
+
+    if (Ethernet.linkStatus() == LinkOFF) {
+      DLF("WRN: Ethernet, no cable");
+      return false;
+    }
+
     active = true;
 
     VLF("MSG: Ethernet, initialized");
@@ -62,6 +87,7 @@ bool EthernetManager::init() {
       if (tasks.add(5, 0, true, 7, mdnsPoll, "mdPoll")) { VL("success"); } else { VL("FAILED!"); }
     #endif
   }
+
   return active;
 }
 
